@@ -1,12 +1,31 @@
 ---
 // Logged out renders a 200 sign-in prompt, not a redirect, so the
 // accessibility invariants can check it cold.
+//
+// Mirrors the real portal's Class Search: pick a subject area first (there
+// are ~200 courses across 11 subjects now, too many to list at once), then
+// optionally narrow by catalogue number / title keyword, then see a compact
+// one-line-per-course results table that — unlike the real portal — reveals
+// eligibility before you try to enrol, not on the last screen.
 import Portal from "../layouts/Portal.astro";
 import { getSessionUser } from "../lib/auth";
-import { getCatalogueForUser, getCompletedMap, type CatalogueEntry } from "../lib/db";
+import {
+  getCatalogueForUser,
+  getCompletedMap,
+  listSubjectAreas,
+  type CatalogueEntry,
+} from "../lib/db";
 import { PORTAL_NAME } from "../lib/site";
 
 const username = getSessionUser(Astro.cookies);
+const subjects = listSubjectAreas();
+
+const subjectParam = (Astro.url.searchParams.get("subject") ?? "").trim().toUpperCase();
+const activeSubject = subjects.find((s) => s.code === subjectParam);
+const numberParam = Astro.url.searchParams.get("number") ?? "";
+const keywordParam = Astro.url.searchParams.get("keyword") ?? "";
+const eligibleOnly = Astro.url.searchParams.get("eligible") === "1";
+
 const catalogue = username ? getCatalogueForUser(username) : [];
 const passed = new Set(
   username ? [...getCompletedMap(username)].filter(([, ok]) => ok).map(([code]) => code) : [],
@@ -14,46 +33,74 @@ const passed = new Set(
 const unmetGroups = (course: CatalogueEntry) =>
   course.groups.filter((group) => !group.some((code) => passed.has(code)));
 
-const SECTION_LABEL: Record<CatalogueEntry["status"], string> = {
-  eligible: "Eligible now",
-  enrolled: "Already enrolled",
-  blocked: "Not eligible",
-  passed: "Completed — passed",
-  failed: "Completed — failed",
+// The subject + catalogue-number + keyword filters define the search itself;
+// the "only eligible" checkbox is a display filter on top of it, so the
+// summary line counts the search (all statuses) while the table honours the
+// checkbox.
+let subjectResults: CatalogueEntry[] = [];
+if (activeSubject) {
+  const digits = numberParam.replace(/\D/g, "");
+  const keyword = keywordParam.trim().toLowerCase();
+  subjectResults = catalogue
+    .filter((c) => c.code.startsWith(activeSubject.code))
+    .filter((c) => !digits || c.code.slice(activeSubject.code.length).startsWith(digits))
+    .filter((c) => !keyword || c.title.toLowerCase().includes(keyword))
+    .sort((a, b) => a.code.localeCompare(b.code));
+}
+const tableResults = eligibleOnly
+  ? subjectResults.filter((c) => c.status === "eligible")
+  : subjectResults;
+
+const counts = { eligible: 0, enrolled: 0, blocked: 0, passed: 0, failed: 0 };
+for (const c of subjectResults) counts[c.status] += 1;
+const completedCount = counts.passed + counts.failed;
+
+const enrolledCourses = catalogue
+  .filter((c) => c.status === "enrolled")
+  .sort((a, b) => a.code.localeCompare(b.code));
+
+const currentSearch = Astro.url.pathname + Astro.url.search;
+
+// The Offered column shows the full term names in the data (comma-joined by
+// course-data.ts), but those are long enough to force truncation or overflow
+// in the compact results table. Abbreviate for display; the full names stay
+// available via the <abbr title> (and to assistive tech via its accessible
+// name), never dropped.
+const TERM_ABBR: Record<string, string> = {
+  "First Semester": "Sem 1",
+  "Second Semester": "Sem 2",
+  "Summer Session": "Summer",
+  "Winter Session": "Winter",
+  "Autumn Session": "Autumn",
+  "Spring Session": "Spring",
 };
 
-const SUMMARY_LABEL: Record<CatalogueEntry["status"], string> = {
-  eligible: "eligible",
-  enrolled: "enrolled",
-  blocked: "not eligible",
-  passed: "passed",
-  failed: "failed",
-};
+function abbreviateTerms(terms: string): string {
+  return terms
+    .split(",")
+    .map((t) => t.trim())
+    .map((t) => TERM_ABBR[t] ?? t)
+    .join(", ");
+}
 
-// One pill label per row. Unmet prerequisites are what a student can act on, so
-// they win the pill; a permission requirement still shows in the row body.
-function pillLabel(course: CatalogueEntry): string {
+function eligibilityText(course: CatalogueEntry): string {
+  const unmet = unmetGroups(course);
   switch (course.status) {
     case "eligible":
       return "Eligible";
     case "enrolled":
       return "Enrolled";
     case "passed":
-      return "Passed";
+      return "Completed — pass";
     case "failed":
-      return "Failed";
+      return "Completed — fail";
     case "blocked":
-      return unmetGroups(course).length > 0 ? "Missing prerequisites" : "Needs permission";
+      if (unmet.length > 0) {
+        return `Needs ${unmet.map((g) => g.join(" or ")).join(", and ")}`;
+      }
+      return course.requiresPermission ? "Permission required" : "Not eligible";
   }
 }
-
-// Order the eligibility question answers up front: eligible and enrolled
-// first, then what's blocking you, then what's already done.
-const order: CatalogueEntry["status"][] = ["eligible", "enrolled", "blocked", "passed", "failed"];
-const sections = order.map((status) => ({
-  status,
-  courses: catalogue.filter((c) => c.status === status),
-}));
 ---
 
 <Portal title={`Enrolment — ${PORTAL_NAME}`} heading="Enrolment" username={username}>
@@ -61,82 +108,151 @@ const sections = order.map((status) => ({
     !username ? (
       <section class="signin-card">
         <h2>Sign in to see your eligibility</h2>
-        <p>
-          Log in to see which courses you're eligible for, before you try to enrol.
-        </p>
+        <p>Log in to see which courses you're eligible for, before you try to enrol.</p>
         <a class="button button-primary" href="/login/">
           Log in
         </a>
       </section>
     ) : (
       <>
-        <p class="programme-banner">
+        <p class="programme-banner programme-banner--compact">
           Undergraduate · Bachelor of Advanced Computing · Second Semester, 2026
         </p>
-        <p class="lede">
-          Courses below are sorted by whether your record already clears them, so you find out
-          before you try to enrol — not on the last screen of the process.
-        </p>
 
-        <nav class="status-summary" aria-label="Jump to a section">
-          {sections.map((section) =>
-            section.courses.length > 0 ? (
-              <a href={`#${section.status}`} class={`status-count status-count--${section.status}`}>
-                <strong>{section.courses.length}</strong> {SUMMARY_LABEL[section.status]}
-              </a>
-            ) : (
-              <span class={`status-count status-count--${section.status}`}>
-                <strong>{section.courses.length}</strong> {SUMMARY_LABEL[section.status]}
-              </span>
-            ),
-          )}
-        </nav>
+        <form method="get" action="/enrolment/" class="class-search-form" aria-label="Class search">
+          <div class="field">
+            <label for="subject-select">Subject Area</label>
+            <select id="subject-select" name="subject" required>
+              <option value="" disabled selected={!activeSubject}>
+                Select a subject…
+              </option>
+              {subjects.map((s) => (
+                <option value={s.code} selected={activeSubject?.code === s.code}>
+                  {s.description} ({s.code})
+                </option>
+              ))}
+            </select>
+          </div>
+          <div class="field">
+            <label for="number-input">Catalogue Number</label>
+            <input
+              id="number-input"
+              name="number"
+              type="text"
+              inputmode="numeric"
+              placeholder="e.g. 2"
+              value={numberParam}
+            />
+          </div>
+          <div class="field field--grow">
+            <label for="keyword-input">Course Title Keyword</label>
+            <input id="keyword-input" name="keyword" type="text" value={keywordParam} />
+          </div>
+          <div class="field field--checkbox">
+            <input id="eligible-checkbox" name="eligible" type="checkbox" value="1" checked={eligibleOnly} />
+            <label for="eligible-checkbox">Only show courses I can enrol in</label>
+          </div>
+          <button type="submit" class="button button-primary">
+            Search
+          </button>
+        </form>
 
-        {sections.map((section) => (
-          <section id={section.status} class={`status-card status-card--${section.status}`}>
-            <header class="status-card__header">
-              <h2>{SECTION_LABEL[section.status]}</h2>
-              <span class="status-card__count">{section.courses.length}</span>
-            </header>
-            {section.courses.length === 0 ? (
-              <p class="status-empty">None.</p>
+        {!activeSubject ? (
+          <section aria-labelledby="enrolments-heading">
+            <h2 id="enrolments-heading">Your enrolments</h2>
+            {enrolledCourses.length === 0 ? (
+              <p class="status-empty">You're not currently enrolled in any courses.</p>
             ) : (
-              <ul class="status-rows">
-                {section.courses.map((course) => (
-                  <li class="status-row">
-                    <div class="status-row__main">
-                      <p class="status-row__title">
-                        <span class="code">{course.code}</span> {course.title}
-                      </p>
-                      <p class="terms">Offered: {course.terms}</p>
-                      {course.status === "blocked" && (
-                        <p class="status-row__reason">
-                          {course.requiresPermission &&
-                            "Needs a permission code from the School. "}
-                          {unmetGroups(course).length > 0 &&
-                            `Still needs: ${unmetGroups(course).map((g) => g.join(" or ")).join(", and ")}. `}
-                          {course.prereqNote}
-                        </p>
-                      )}
-                      {course.status !== "blocked" && course.prereqNote && (
-                        <p class="status-row__reason">{course.prereqNote}</p>
-                      )}
-                    </div>
-                    <div class="status-row__side">
-                      <span class={`pill pill-${course.status}`}>{pillLabel(course)}</span>
-                      {course.status === "eligible" && (
-                        <form method="post" action="/api/enrol" class="inline-form">
-                          <input type="hidden" name="code" value={course.code} />
-                          <button class="button button-primary" aria-label={`Enrol in ${course.code}`}>Enrol</button>
-                        </form>
-                      )}
-                    </div>
+              <ul class="enrolled-compact">
+                {enrolledCourses.map((c) => (
+                  <li>
+                    <span class="code">{c.code}</span> {c.title}
                   </li>
                 ))}
               </ul>
             )}
           </section>
-        ))}
+        ) : (
+          <section aria-labelledby="results-heading">
+            <p id="results-heading" class="summary-line">
+              {subjectResults.length} {activeSubject.code} course
+              {subjectResults.length === 1 ? "" : "s"} · {counts.eligible} eligible ·{" "}
+              {counts.enrolled} enrolled · {counts.blocked} not eligible · {completedCount} completed
+            </p>
+
+            {tableResults.length === 0 ? (
+              <p class="status-empty">No courses match your search.</p>
+            ) : (
+              <table class="results-table" role="table">
+                <caption class="visually-hidden">
+                  {activeSubject.description} courses matching your search, with eligibility
+                </caption>
+                <thead>
+                  <tr role="row">
+                    <th scope="col" role="columnheader">
+                      Code
+                    </th>
+                    <th scope="col" role="columnheader">
+                      Course
+                    </th>
+                    <th scope="col" role="columnheader">
+                      Offered
+                    </th>
+                    <th scope="col" role="columnheader">
+                      Eligibility
+                    </th>
+                    <th scope="col" role="columnheader">
+                      <span class="visually-hidden">Action</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableResults.map((course) => {
+                    const hasDetails = course.requiresPermission || Boolean(course.prereqNote);
+                    const muted = course.status === "blocked" || course.status === "passed" || course.status === "failed";
+                    return (
+                      <tr role="row" class={`results-row results-row--${course.status}${muted ? " results-row--muted" : ""}`}>
+                        <th scope="row" role="rowheader" class="results-row__code">
+                          <span class="code">{course.code}</span>
+                        </th>
+                        <td role="cell" class="results-row__title" data-label="Course">
+                          {course.title}
+                        </td>
+                        <td role="cell" class="results-row__terms" data-label="Offered">
+                          <abbr title={course.terms}>{abbreviateTerms(course.terms)}</abbr>
+                        </td>
+                        <td role="cell" class="results-row__elig" data-label="Eligibility">
+                          <span class={`status-dot status-dot--${course.status}`} aria-hidden="true" />
+                          <span class="elig-text">{eligibilityText(course)}</span>
+                          {hasDetails && (
+                            <details class="elig-details">
+                              <summary>Details</summary>
+                              {course.requiresPermission && <p>Needs a permission code from the School.</p>}
+                              {course.prereqNote && <p>{course.prereqNote}</p>}
+                            </details>
+                          )}
+                        </td>
+                        <td role="cell" class="results-row__action">
+                          {course.status === "eligible" ? (
+                            <form method="post" action="/api/enrol" class="inline-form">
+                              <input type="hidden" name="code" value={course.code} />
+                              <input type="hidden" name="return" value={currentSearch} />
+                              <button class="button button-secondary" aria-label={`Enrol in ${course.code}`}>
+                                Enrol
+                              </button>
+                            </form>
+                          ) : (
+                            <span aria-hidden="true">—</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
+          </section>
+        )}
       </>
     )
   }

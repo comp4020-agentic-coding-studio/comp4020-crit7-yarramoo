@@ -4,15 +4,26 @@
 // a new account each time. Logic and form field names are unchanged
 // (course_<CODE> = none/pass/fail, POST /api/god-mode). Still redirects to
 // /login/ when logged out — that's fine, it isn't in the invariants list.
+//
+// The catalogue is ~200 courses now, so this page shows one subject area at
+// a time (a GET ?subject= filter) rather than every course at once. Saving
+// only ever replaces that one subject's slice of the transcript — see
+// setCompletedCoursesForSubject in src/lib/db.ts — so switching subjects and
+// saving again never wipes out what you set for another subject.
 import Portal from "../layouts/Portal.astro";
 import { getSessionUser } from "../lib/auth";
-import { getCompletedMap, listCourses } from "../lib/db";
+import { getCompletedMap, listCourses, listSubjectAreas } from "../lib/db";
 import { PORTAL_NAME } from "../lib/site";
 
 const username = getSessionUser(Astro.cookies);
 if (!username) return Astro.redirect("/login/", 302);
 
-const courses = listCourses();
+const subjects = listSubjectAreas();
+const requested = (Astro.url.searchParams.get("subject") ?? "").toUpperCase();
+const fallback = subjects.find((s) => s.code === "COMP")?.code ?? subjects[0]?.code ?? "";
+const activeSubject = subjects.find((s) => s.code === requested)?.code ?? fallback;
+
+const courses = listCourses().filter((c) => c.code.startsWith(activeSubject));
 const completed = getCompletedMap(username);
 ---
 
@@ -23,10 +34,27 @@ const completed = getCompletedMap(username);
     checks entirely.
   </p>
 
+  <form method="get" class="godmode-filter">
+    <label for="gm-subject">Subject area</label>
+    <select id="gm-subject" name="subject">
+      {
+        subjects.map((s) => (
+          <option value={s.code} selected={s.code === activeSubject}>
+            {s.description} ({s.code})
+          </option>
+        ))
+      }
+    </select>
+    <button type="submit" class="button">Show</button>
+  </form>
+
   <form method="post" action="/api/god-mode">
+    <input type="hidden" name="subject" value={activeSubject} />
     <div class="table-scroll">
       <table class="godmode-table">
-        <caption class="visually-hidden">Set a pass/fail/not-taken result for every course</caption>
+        <caption class="visually-hidden">
+          Set a pass/fail/not-taken result for every {activeSubject} course
+        </caption>
         <thead>
           <tr>
             <th scope="col">Course</th>

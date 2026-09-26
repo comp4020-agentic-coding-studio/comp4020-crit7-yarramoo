@@ -624,7 +624,7 @@ th[scope="row"] {
   color: var(--status-blocked-text);
 }
 
-/* ---------- Enrolment ---------- */
+/* ---------- Enrolment / class search ---------- */
 
 .programme-banner {
   display: inline-block;
@@ -637,122 +637,15 @@ th[scope="row"] {
   font-size: 0.9rem;
 }
 
+.programme-banner--compact {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
 .lede {
   max-width: 60ch;
   color: var(--muted);
-}
-
-.status-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.25rem;
-  margin-block: 1rem 1.5rem;
-  padding: 0.75rem 1rem;
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-}
-
-.status-count {
-  color: var(--text);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-
-.status-count[href] {
-  text-decoration: underline;
-}
-
-.status-count--eligible {
-  color: var(--status-eligible-text);
-}
-
-.status-count--enrolled {
-  color: var(--status-enrolled-text);
-}
-
-.status-count--blocked {
-  color: var(--status-blocked-text);
-}
-
-.status-count--passed {
-  color: var(--status-passed-text);
-}
-
-.status-count--failed {
-  color: var(--status-failed-text);
-}
-
-.status-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-left-width: 6px;
-  border-radius: 4px;
-  margin-block: 1.25rem;
-  overflow: hidden;
-}
-
-.status-card--eligible {
-  border-left-color: var(--status-eligible-border);
-}
-
-.status-card--enrolled {
-  border-left-color: var(--status-enrolled-border);
-}
-
-.status-card--blocked {
-  border-left-color: var(--status-blocked-border);
-}
-
-.status-card--passed {
-  border-left-color: var(--status-passed-border);
-}
-
-.status-card--failed {
-  border-left-color: var(--status-failed-border);
-}
-
-.status-card__header {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 1rem;
-  background: var(--title-strip-bg);
-}
-
-.status-card--eligible .status-card__header {
-  background: var(--status-eligible-bg);
-}
-
-.status-card--enrolled .status-card__header {
-  background: var(--status-enrolled-bg);
-}
-
-.status-card--blocked .status-card__header {
-  background: var(--status-blocked-bg);
-}
-
-.status-card--passed .status-card__header {
-  background: var(--status-passed-bg);
-}
-
-.status-card--failed .status-card__header {
-  background: var(--status-failed-bg);
-}
-
-.status-card__header h2 {
-  margin: 0;
-  font-size: 1rem;
-  color: var(--brand-navy);
-}
-
-.status-card__count {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--muted);
-  background: var(--card-bg);
-  border-radius: 999px;
-  padding: 0.05rem 0.55rem;
 }
 
 .status-empty {
@@ -762,49 +655,293 @@ th[scope="row"] {
   font-style: italic;
 }
 
-.status-rows {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+/* Class Search form: compact, one or two rows on desktop. */
+.class-search-form {
+  align-items: end;
+  gap: 0.6rem 1rem;
+  margin-block: 0 1.25rem;
+  padding: 0.85rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
 }
 
-.status-row {
+.class-search-form .field {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
-  border-block-start: 1px solid var(--border);
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 9rem;
 }
 
-.status-row:first-child {
-  border-block-start: none;
+.class-search-form .field--grow {
+  flex: 1 1 14rem;
 }
 
-.status-row__main {
+.class-search-form .field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.4rem;
   min-width: 0;
 }
 
-.status-row__title {
-  margin: 0;
-}
-
-.status-row__reason {
-  margin: 0.3rem 0 0;
+.class-search-form label {
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--muted);
-  font-size: 0.9em;
 }
 
-.status-row__side {
+.class-search-form .field--checkbox label {
+  font-weight: 400;
+  color: var(--text);
+}
+
+.class-search-form select,
+.class-search-form input[type="text"] {
+  min-width: 0;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font: inherit;
+}
+
+.class-search-form input[type="checkbox"] {
   flex: none;
+  min-width: 0;
+  width: 1rem;
+  height: 1rem;
+}
+
+.button-secondary {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  border: 1px solid var(--brand-navy);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--brand-navy);
+  font-weight: 600;
+}
+
+.button-secondary:hover {
+  background: var(--brand-navy);
+  color: #fff;
+}
+
+.enrolled-compact {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
-.status-row__side form {
+.enrolled-compact li {
+  padding: 0.35rem 0.6rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.summary-line {
+  margin: 0 0 0.6rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+/* Results table: one compact ~40px row per course. Eligibility is a subtle
+   cue — muted text plus a small dot/left stripe, never colour alone, since
+   the text in .elig-text always carries the status. table-layout: fixed plus
+   explicit column widths keep every row to one line on desktop; the Code and
+   Course cells ellipsis-truncate rather than wrap. */
+.results-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  background: var(--card-bg);
+  font-size: 0.9rem;
+}
+
+.results-table caption {
+  text-align: left;
+}
+
+.results-table th,
+.results-table td {
+  border: none;
+  border-block-end: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.results-table thead th {
+  background: var(--title-strip-bg);
+  color: var(--brand-navy);
+  font-size: 0.8rem;
+  border-block-end: 1px solid var(--border);
+}
+
+.results-table th:nth-child(1),
+.results-table td:nth-child(1) {
+  /* Course codes must never truncate: wide enough for "COMP1100" plus
+     padding, and no ellipsis clipping even if a code is unexpectedly long. */
+  width: 7.5rem;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.results-table th:nth-child(2),
+.results-table td:nth-child(2) {
+  width: auto;
+  /* Course titles may wrap rather than truncate. */
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.results-table th:nth-child(3),
+.results-table td:nth-child(3) {
+  /* Offered terms are abbreviated for display (full names kept in the
+     <abbr title>), but even the abbreviated form must never truncate — allow
+     wrap instead of clipping for subjects with long term combinations. */
+  width: 9rem;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.results-table th:nth-child(4),
+.results-table td:nth-child(4) {
+  width: 16rem;
+  white-space: normal; /* eligibility text + details can wrap/expand */
+  overflow: visible;
+}
+
+.results-table th:nth-child(5),
+.results-table td:nth-child(5) {
+  width: 5rem;
+  text-align: right;
+}
+
+.results-row__code {
+  box-shadow: inset 3px 0 0 var(--row-stripe, transparent);
+}
+
+.results-row--eligible .results-row__code {
+  --row-stripe: var(--status-eligible-border);
+}
+
+.results-row--enrolled .results-row__code {
+  --row-stripe: var(--status-enrolled-border);
+}
+
+.results-row--blocked .results-row__code {
+  --row-stripe: var(--status-blocked-border);
+}
+
+.results-row--passed .results-row__code {
+  --row-stripe: var(--status-passed-border);
+}
+
+.results-row--failed .results-row__code {
+  --row-stripe: var(--status-failed-border);
+}
+
+.results-row--muted {
+  color: var(--muted);
+}
+
+.results-row--muted .results-row__title,
+.results-row--muted .results-row__terms {
+  color: var(--muted);
+}
+
+.status-dot {
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  margin-inline-end: 0.4em;
+  background: var(--dot-colour, var(--muted));
+  flex: none;
+}
+
+.status-dot--eligible {
+  --dot-colour: var(--status-eligible-text);
+}
+
+.status-dot--enrolled {
+  --dot-colour: var(--status-enrolled-text);
+}
+
+.status-dot--blocked {
+  --dot-colour: var(--status-blocked-text);
+}
+
+.status-dot--passed {
+  --dot-colour: var(--status-passed-text);
+}
+
+.status-dot--failed {
+  --dot-colour: var(--status-failed-text);
+}
+
+.results-row__elig {
+  color: var(--elig-colour, var(--text));
+}
+
+.results-row--eligible .results-row__elig {
+  --elig-colour: var(--status-eligible-text);
+}
+
+.results-row--enrolled .results-row__elig {
+  --elig-colour: var(--status-enrolled-text);
+}
+
+.results-row--blocked .results-row__elig {
+  --elig-colour: var(--status-blocked-text);
+}
+
+.results-row--passed .results-row__elig {
+  --elig-colour: var(--status-passed-text);
+}
+
+.results-row--failed .results-row__elig {
+  --elig-colour: var(--status-failed-text);
+}
+
+.elig-text {
+  font-size: 0.88em;
+}
+
+.elig-details {
+  display: inline;
+  margin-inline-start: 0.4em;
+}
+
+.elig-details summary {
+  display: inline;
+  cursor: pointer;
+  color: var(--brand-accent);
+  font-size: 0.85em;
+  text-decoration: underline;
+}
+
+.elig-details p {
+  display: block;
+  margin: 0.3rem 0 0;
+  color: var(--text);
+  font-size: 0.9em;
+  white-space: normal;
+}
+
+.results-row__action form {
   margin: 0;
+  justify-content: flex-end;
 }
 
 /* ---------- Academic Records ---------- */
@@ -836,6 +973,19 @@ th[scope="row"] {
 
 .godmode-callout {
   max-width: 60ch;
+}
+
+.godmode-filter {
+  margin-block: 0.75rem 0.25rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.godmode-filter label {
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .table-scroll {
@@ -885,19 +1035,150 @@ th[scope="row"] {
   .portal-status {
     text-align: center;
   }
+}
 
-  .status-row {
-    flex-direction: column;
+@media (max-width: 600px) {
+  /* Collapse the class-search results table into two compact lines per
+     course instead of scrolling horizontally. The column headers stay in
+     the accessibility tree (visually-hidden, not display:none) so screen
+     reader users keep the Code/Course/Offered/Eligibility association even
+     though sighted users no longer see the header row. Explicit ARIA roles
+     on every cell (set in the markup) keep the table semantics intact once
+     display switches away from table/row/cell. */
+  .results-table,
+  .results-table tbody {
+    display: block;
+    width: 100%;
   }
 
-  .status-row__side {
-    align-items: flex-start;
-    flex-direction: row;
-    flex-wrap: wrap;
+  /* Body rows get their layout from .results-row below (display: grid, a
+     block-level box, so this still un-tables the row). Rows are matched by
+     tr.results-row specifically — deliberately more specific than a bare
+     `.results-table tr` would be — so this can't lose a display-property
+     fight with a broader tr rule added later. That's exactly what broke the
+     two-line stacking before: a `.results-table tr { display: block }` rule
+     has higher specificity (a class + a type) than `.results-row { display:
+     grid }` (one class), so the tr's block won every time and the grid
+     template-areas below never applied, leaving all five cells to render as
+     squashed table-cells side by side. */
+
+  .results-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
-  .status-summary {
+  .results-table tr.results-row {
+    display: grid;
+    width: 100%;
+    /* minmax(0, 1fr): a bare `1fr` track has an automatic minimum size of
+       "auto" (content-based), so when the "course" cell spans it plus the
+       auto action column, the spanning item's max-content contribution can
+       inflate the auto column and blow the row width out past the viewport
+       instead of wrapping. Capping the flexible track's minimum at 0 (and
+       min-width: 0 on the title item below) lets it shrink and actually
+       wrap, per the standard CSS Grid "blowout" fix. */
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "code course course"
+      "terms elig action";
+    column-gap: 0.5rem;
+    row-gap: 0.15rem;
+    padding: 0.45rem 0.6rem;
+    border-block-end: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .results-table th,
+  .results-table td {
+    border: none;
+    padding: 0;
+    width: auto;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  /* The desktop column-width rules above (nth-child(1)/(3)/(4)/(5): fixed
+     rem widths so codes/terms/eligibility/action line up in neat table
+     columns) match this exact selector shape, so they have the same
+     specificity as the generic reset just above and as this rule — which
+     wins by appearing later in the stylesheet. Without this, those fixed
+     widths keep applying inside the mobile grid (e.g. eligibility forced to
+     16rem regardless of its actual grid track), blowing every row's total
+     width out past the viewport instead of letting the grid size each
+     column to the space actually available. */
+  .results-table th:nth-child(1),
+  .results-table td:nth-child(1),
+  .results-table th:nth-child(2),
+  .results-table td:nth-child(2),
+  .results-table th:nth-child(3),
+  .results-table td:nth-child(3),
+  .results-table th:nth-child(4),
+  .results-table td:nth-child(4),
+  .results-table th:nth-child(5),
+  .results-table td:nth-child(5) {
+    width: auto;
+  }
+
+  /* Every grid item below gets min-width: 0 — grid items default to
+     min-width: auto (a content-based automatic minimum), which can keep a
+     cell from ever shrinking to its track's resolved width and let its text
+     spill into the next column instead of wrapping (the same "grid blowout"
+     the track-sizing comment above describes, just per-item). */
+  .results-row__code {
+    grid-area: code;
+    min-width: 0;
+  }
+
+  .results-row__title {
+    grid-area: course;
+    font-weight: 600;
+    min-width: 0;
+  }
+
+  .results-row__terms {
+    grid-area: terms;
+    font-size: 0.82rem;
+    color: var(--muted);
+    min-width: 0;
+  }
+
+  .results-row__elig {
+    grid-area: elig;
+    min-width: 0;
+  }
+
+  .results-row__action {
+    grid-area: action;
+    text-align: right;
+    min-width: 0;
+  }
+
+  .class-search-form {
     flex-direction: column;
-    gap: 0.4rem;
+    align-items: stretch;
+  }
+
+  .class-search-form .field,
+  .class-search-form .field--grow {
+    min-width: 0;
+  }
+
+  /* .field--grow's `flex: 1 1 14rem` above sizes the field along the
+     class-search-form main axis. That's horizontal (width) on desktop, but
+     .class-search-form just switched to flex-direction: column, making the
+     same rule apply to height instead: the field (and the input inside it,
+     which has its own `flex: 1` in the shared input rule) would grow to fill
+     ~14rem+ of vertical space, rendering the keyword input like a 200px-tall
+     textarea. Reset it to content-sized on narrow screens. */
+  .class-search-form .field--grow {
+    flex: 0 1 auto;
   }
 }
