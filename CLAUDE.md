@@ -9,3 +9,14 @@ where it lives --- `fly.toml`, the `Dockerfile`, the CI workflow and
 [course website](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/)
 publishes this deliverable's brief and spec. Read them before you plan or build;
 what the agent needs to carry from any of it is your call.
+
+## Research hygiene
+
+Web searches for systematic and structured content (a series of pages with the
+same template — course pages, product listings, API docs for the same
+endpoint shape) should quickly converge on a grep rule: fetch one instance raw,
+find the stable marker around the data you need (an id, a class name, a
+heading), and use that pattern to extract just that slice from every other
+page — via `curl` + `grep`/`sed`, not a full-page fetch or summary per item.
+Don't re-derive the pattern per item and don't let full pages pile up in
+context; one page read to find the rule, then the rule does the rest.
