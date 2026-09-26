@@ -28,8 +28,15 @@ the crest and tile art
 The university is fictional because a public ANU lookalike that echoes
 passwords would read as phishing.
 
+Adding more disciplines, I gave scraping to Haiku. A spot check found it had
+mangled prerequisites, so a Sonnet worker rebuilt them from the raw text
+([`065e395`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/065e395)).
+Cheap models can fetch data, but the judgement needs checking.
+Headless-Chrome screenshots, not green tests, caught the broken phone layout
+([`02eb620`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/02eb620)).
+
 Every flow was smoke-tested with `curl`; the accessibility invariants cover each
 logged-out page.
 
 Full range:
-[`378f1ed...2102b95`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/compare/378f1ed...2102b95).
+[`378f1ed...02eb620`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/compare/378f1ed...02eb620).

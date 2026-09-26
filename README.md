@@ -17,12 +17,15 @@ covering timetable, degree planning, finances and personal details, but only
 tile is visibly marked *under construction* and isn't a link, so there are no
 dead pages to fall into.
 
-**Enrolment** (`/enrolment/`) is the point of the prototype. It lists real ANU
-COMP courses split into eligible now, already enrolled, not eligible (with the
-specific reason: missing prerequisite, needs a permission code, or both),
-passed, and failed. Colour makes the groups easy to tell apart without
-reading every line. **Academic Records** (`/records/`) is the read-only
-transcript that those verdicts are computed from.
+**Enrolment** (`/enrolment/`) is the point of the prototype. As in the real
+portal, you search by subject area first: 196 real ANU courses across eleven
+disciplines, from Computer Science to Psychology and History. Unlike the real
+portal, each result row already says whether you can take the course:
+eligible, enrolled, completed, or not eligible, with the specific reason
+("Needs COMP2300 or ENGN2219", "Permission required"). The cue is deliberately
+quiet, just an edge stripe, a dot and a few words, so a whole subject fits on
+one screen at one line per course. **Academic Records** (`/records/`) is the
+read-only transcript those verdicts are computed from.
 
 ## What good looks like here
 
@@ -55,6 +58,11 @@ revealed after it**. Everything else follows from that:
   requirements, program restrictions, "apply via form" style permission
   gates. That note is deliberately not machine-checked; some ANU
   prerequisites genuinely aren't a boolean function of a course list.
+  Where a course has alternative pathways, only the main one is checked and
+  the rest are listed in the note. The catalogue is a sample, so a few
+  courses depend on courses outside it, such as superseded BIOL codes.
+  Those courses stay "not eligible", and god mode can't mark their
+  requirements passed.
 - **The login is a testing harness, not a feature.** The brief was to
   prototype the eligibility view, which means testing it against many
   different plausible transcripts matters more than the login itself. So:
