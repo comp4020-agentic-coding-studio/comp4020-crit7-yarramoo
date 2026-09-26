@@ -3,43 +3,37 @@
 ## What I built
 
 A course-enrolment prototype, dressed as a fictional university's student
-portal, that shows eligibility (prerequisites, permission codes) for every
-course up front instead of at the final step. `README.md` covers what it is;
-this covers how the agent got there.
+portal, that shows eligibility for every course up front instead of at the
+final step. `README.md` covers what it is; this covers how the agent got there.
 
-## How I got here
+## How I directed it
 
-The agent extracted real ANU course data using a grep-based pattern, now
-recorded in `CLAUDE.md`. Prerequisites are modelled as AND-of-OR groups plus a
-free-text note. I then expanded the brief myself: a no-auth login (three wrong
-passwords reveals yours), prerequisite-consistent random transcripts, and god
-mode. I asked for catalogue and student tables to stay separate
-([`d07bc92`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/d07bc92),
-[`41a6f62`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/41a6f62)).
+I ran Opus as orchestrator and had it delegate by weight: Haiku for repetitive
+scraping, Sonnet workers for code, Opus planning and reviewing every diff.
+Keeping raw output inside subagents meant the whole build ran without a
+compaction.
 
-To make it look like a real portal, I had the agent plan first and delegate to
-two cheaper Sonnet workers, reviewing each diff itself
-([`cb0ce7c`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/cb0ce7c),
-[`7ba4e31`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/7ba4e31)).
-That review caught blocked courses restating prerequisites the student had
-already met. I had the agent write an image-generation skill against the course proxy for
-the crest and tile art
+I shaped the harness as I went. A research-hygiene rule in `CLAUDE.md` makes
+scraping converge on one grep pattern instead of summarising page after page
+([`d07bc92`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/d07bc92)).
+An image-generation skill made the crest and tile art
 ([`2102b95`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/2102b95)).
-The university is fictional because a public ANU lookalike that echoes
-passwords would read as phishing.
 
-Adding more disciplines, I gave scraping to Haiku. A spot check found it had
-mangled prerequisites, so a Sonnet worker rebuilt them from the raw text
-([`065e395`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/065e395)).
-Cheap models can fetch data, but the judgement needs checking.
-Headless-Chrome screenshots, not green tests, caught the broken phone layout
-([`02eb620`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/02eb620)).
-I then asked whether rules like "6 units of MATH" affected eligibility. They didn't, so
-the checker now handles unit counts, exclusions and incompatibilities
-([`72f951c`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/72f951c)).
+## Milestones
 
-Every flow was smoke-tested with `curl`; the accessibility invariants cover each
-logged-out page.
+- Real ANU catalogue, prerequisites as AND-of-OR groups, then login, random transcripts, enrolment and god mode ([`d07bc92`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/d07bc92), [`41a6f62`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/41a6f62)).
+- Reframed as a fictional university, since a public ANU lookalike that echoes passwords reads as phishing ([`cb0ce7c`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/cb0ce7c)).
+- Eleven disciplines. A spot check caught Haiku mangling prerequisites; Sonnet rebuilt them from source ([`065e395`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/065e395)).
+- Class search. Screenshots, not green tests, caught a broken phone layout ([`02eb620`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/02eb620)).
+- I asked whether "6 units of MATH" was checked. It wasn't, so the checker now handles unit counts and incompatibilities ([`72f951c`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/72f951c)).
+
+## Recovering from a crash
+
+Near the end Claude Code crashed, and the resumed session had no network.
+Rather than work around the sandbox, I had Opus write an untracked
+`WORKLOG.md` handover. A fresh session read it, revalidated, deployed, and
+removed a stale CI check
+([`8af8ad7`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/8af8ad7)).
 
 Full range:
-[`378f1ed...72f951c`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/compare/378f1ed...72f951c).
+[`ebd1146...8af8ad7`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/compare/ebd1146...8af8ad7).

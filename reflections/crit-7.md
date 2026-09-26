@@ -2,25 +2,27 @@
 
 ## What was the breakthrough that moved the work forward?
 
-The breakthrough was realising that a login system for a prototype whose real
-subject is an eligibility page doesn't need to be a feature — it needs to be a
-testing harness. Once I framed it that way, the "no real auth" constraint
-stopped being a corner I was cutting and became the source of the best idea in
-the build: since there's genuinely nothing to protect, the failed-login flow
-could just be honest about it and hand back the password after three tries. That
-same framing justified the randomised-transcript generator and god-mode page —
-both exist so I can throw many different plausible (and implausible) course
-histories at the eligibility logic without hand-writing fixtures or redeploying
-data every time I want a new test case.
+I took a different approach this week - using Opus 5.5 as the main orchestrator, 
+and explicitly asking that all development and research tasks are delegated to appropriately 
+powered subagents. This worked well - with Haiku being used for repetitive web 
+scraping tasks, Sonnet being used for development, and Opus identifying issues 
+at the top level. This had a dramatic effect on context window management, and I 
+got through the whole session without needing a compaction. 
+
+Some other harness things - I added a skill for image generation, and made a research-
+hygiene note in the CLAUDE.md file detailing that repetitive scraping tasks should 
+always find a suitable grep strategy to prevent unneeded information from flooding 
+the context window. 
+
+Last useful step was that towards the end, claude code crashed and when I rejoined the 
+session, network access had been blocked for the process. So I asked Opus to write a 
+WORKLOG.md to the project (not committed to git), and a new session could more-or-less 
+pick up where we left off. 
+
 
 ## What did this work change about who I want to be as a software developer?
 
-I noticed I was more willing than usual to expand scope mid-build — asking for
-a whole login/user system on top of an already-working eligibility page — because
-the underlying data model (the AND-of-OR prerequisite groups) was solid enough
-that I trusted it would compose with new features instead of fighting them. That's
-a habit I want to keep: get the core model right and legible before layering
-features on it, rather than building breadth first and hoping the model holds.
-The squashed-migration recovery mid-build was a reminder that this trust still
-needs verifying, not just assuming — I asked the agent to confirm the generated
-SQL was actually clean rather than taking a green `db:generate` at face value.
+Certainly to be more intentional about subagents, delegation, and agent levels. Even if 
+a task doesn't require Opus-powered thinking, its massive context window is a big deal 
+in completing tasks quickly without multiple compactions. Delegating tasks certainly helps 
+with this too. 
