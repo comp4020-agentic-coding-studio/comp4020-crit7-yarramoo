@@ -1,59 +1,54 @@
 ---
-import "../styles.css";
+import Portal from "../layouts/Portal.astro";
+import { getSessionUser } from "../lib/auth";
+import { PORTAL_NAME, UNIVERSITY_NAME } from "../lib/site";
 
 const params = Astro.url.searchParams;
 const error = params.get("error");
 const username = params.get("username") ?? "";
 const attempts = params.get("attempts");
 const revealedPassword = params.get("password");
+
+const sessionUser = getSessionUser(Astro.cookies);
 ---
 
-<!doctype html>
-<html lang="en-AU">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Log in — course enrolment</title>
-  </head>
-  <body>
-    <nav aria-label="site">
-      <a href="/">Enrol</a>
-      <a href="/readme/">About</a>
-    </nav>
-    <main>
-      <h1>Log in</h1>
-      <p>
-        There's no real identity check here: type any username. The first time it shows up, the
-        password you type becomes that account's password — there's no separate sign-up. Get it
-        wrong three times in a row and the portal just tells you what it is.
-      </p>
-      {
-        error === "wrong" && (
-          <p role="alert" class="notice notice-error">
-            Wrong password ({attempts} of 3 attempts). Two more and it'll just tell you.
-          </p>
-        )
-      }
-      {
-        error === "revealed" && (
-          <p role="alert" class="notice notice-error">
-            Three wrong guesses — alright, your password is <strong>{revealedPassword}</strong>.
-          </p>
-        )
-      }
-      <form method="post" action="/api/login">
-        <label for="username">Username</label>
-        <input id="username" name="username" required value={username} autocomplete="username" />
-        <label for="password">Password</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          required
-          autocomplete="current-password"
-        />
-        <button>Log in</button>
-      </form>
-    </main>
-  </body>
-</html>
+<Portal title={`Sign in — ${PORTAL_NAME}`} heading="Sign in" username={sessionUser}>
+  <div class="auth-card">
+    <p class="notice notice-info">
+      {UNIVERSITY_NAME} is fictional and this isn't real authentication — don't use a real
+      password.
+    </p>
+    <p>
+      There's no real identity check here: type any username. The first time it shows up, the
+      password you type becomes that account's password — there's no separate sign-up. Get it
+      wrong three times in a row and the portal just tells you what it is.
+    </p>
+    {
+      error === "wrong" && (
+        <p role="alert" class="notice notice-error">
+          Wrong password ({attempts} of 3 attempts). Two more and it'll just tell you.
+        </p>
+      )
+    }
+    {
+      error === "revealed" && (
+        <p role="alert" class="notice notice-error">
+          Three wrong guesses — alright, your password is <strong>{revealedPassword}</strong>.
+        </p>
+      )
+    }
+    <form method="post" action="/api/login" class="stacked-form">
+      <label for="username">Username</label>
+      <input id="username" name="username" required value={username} autocomplete="username" />
+      <label for="password">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        required
+        autocomplete="current-password"
+      />
+      <button class="button button-primary">Log in</button>
+    </form>
+  </div>
+</Portal>

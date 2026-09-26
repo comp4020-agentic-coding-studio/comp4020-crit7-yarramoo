@@ -2,27 +2,24 @@
 // README.md, rendered: what this app is and what good looks like here,
 // published with the app. spec/readme.test.ts checks the whole of it is here.
 import * as readme from "../../README.md";
-import "../styles.css";
+import Portal from "../layouts/Portal.astro";
+import { getSessionUser } from "../lib/auth";
+import { PORTAL_NAME } from "../lib/site";
 
 const title = readme.getHeadings().find((h) => h.depth === 1)?.text ?? "README";
+const sessionUser = getSessionUser(Astro.cookies);
 
 // README images are committed to public/ and linked relatively (public/x.png)
 // so they render on GitHub; here they're served from the site root.
-const html = (await readme.compiledContent()).replace(/(src|href)="public\//g, '$1="/');
+const rawHtml = (await readme.compiledContent()).replace(/(src|href)="public\//g, '$1="/');
+
+// The compiled markdown's own <h1> duplicates the Portal layout's <h1>
+// (which renders `title` above the content), so it's stripped here — its
+// text still ends up on the page via `title`/`heading`, and the rest of the
+// README's text is untouched.
+const html = rawHtml.replace(/^\s*<h1[^>]*>[\s\S]*?<\/h1>/, "");
 ---
 
-<!doctype html>
-<html lang="en-AU">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-  </head>
-  <body>
-    <nav aria-label="site">
-      <a href="/">Guestbook</a>
-      <a href="/readme/">About</a>
-    </nav>
-    <main set:html={html} />
-  </body>
-</html>
+<Portal title={`${title} — ${PORTAL_NAME}`} heading={title} username={sessionUser}>
+  <div class="readme-content" set:html={html} />
+</Portal>

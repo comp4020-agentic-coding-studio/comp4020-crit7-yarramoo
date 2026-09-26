@@ -1,0 +1,76 @@
+---
+// Moved from src/pages/index.astro as part of the portal redesign — the hub
+// now lives at "/". Logic and bucket markup are otherwise unchanged; worker B
+// redesigns this page's content next. Must still render a 200 logged-out
+// state (a sign-in prompt), not a redirect, since the accessibility
+// invariants fetch it cold with no cookie.
+import Portal from "../layouts/Portal.astro";
+import { getSessionUser } from "../lib/auth";
+import { getCatalogueForUser } from "../lib/db";
+import { PORTAL_NAME } from "../lib/site";
+
+const username = getSessionUser(Astro.cookies);
+const catalogue = username ? getCatalogueForUser(username) : [];
+
+const STATUS_LABEL: Record<string, string> = {
+  eligible: "Eligible now",
+  blocked: "Not eligible",
+  enrolled: "Already enrolled",
+  passed: "Completed — passed",
+  failed: "Completed — failed",
+};
+
+// Group by status so the whole "which bucket am I in" question the real
+// enrolment flow only answers at the last step is answered here up front.
+const order = ["eligible", "enrolled", "blocked", "passed", "failed"] as const;
+const buckets = order
+  .map((status) => ({ status, courses: catalogue.filter((c) => c.status === status) }))
+  .filter((bucket) => bucket.courses.length > 0);
+---
+
+<Portal title={`Enrolment — ${PORTAL_NAME}`} heading="Enrolment" username={username}>
+  {
+    !username ? (
+      <p>
+        <a href="/login/">Log in</a> to see which courses you're eligible for.
+      </p>
+    ) : (
+      <>
+        <p>
+          Courses are sorted by whether your transcript already clears them — no more finding out
+          you needed a prerequisite on the last screen.
+        </p>
+        {buckets.map((bucket) => (
+          <section class={`bucket bucket-${bucket.status}`}>
+            <h2>{STATUS_LABEL[bucket.status]}</h2>
+            <ul>
+              {bucket.courses.map((course) => (
+                <li>
+                  <span class="code">{course.code}</span> {course.title}
+                  <span class="terms">({course.terms})</span>
+                  {course.status === "eligible" && (
+                    <form method="post" action="/api/enrol" class="inline-form">
+                      <input type="hidden" name="code" value={course.code} />
+                      <button>Enrol</button>
+                    </form>
+                  )}
+                  {course.status === "blocked" && (
+                    <p class="why">
+                      {course.requiresPermission && "Needs a permission code from the School. "}
+                      {course.groups.length > 0 &&
+                        `Requires: ${course.groups.map((g) => g.join(" or ")).join(" and ")}. `}
+                      {course.prereqNote}
+                    </p>
+                  )}
+                  {course.status !== "blocked" && course.prereqNote && (
+                    <p class="why">{course.prereqNote}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </>
+    )
+  }
+</Portal>

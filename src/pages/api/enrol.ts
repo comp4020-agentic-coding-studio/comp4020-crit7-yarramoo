@@ -9,5 +9,5 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const form = await request.formData();
   const code = String(form.get("code") ?? "");
   if (code) enrol(username, code);
-  return redirect("/", 303);
+  return redirect("/enrolment/", 303);
 };

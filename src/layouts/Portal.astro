@@ -1,0 +1,156 @@
+---
+// Shared shell for every page in the redesign: header, toolbar, decorative
+// band, title strip, main content slot, footer. This is the ONLY place an
+// <h1> is allowed to appear — pages pass their heading in as a prop instead
+// of rendering their own.
+import "../styles.css";
+import { PORTAL_NAME, UNIVERSITY_NAME } from "../lib/site";
+
+interface Props {
+  title: string;
+  heading: string;
+  username?: string | null;
+}
+
+const { title, heading, username = null } = Astro.props;
+
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/enrolment/", label: "Enrolment" },
+  { href: "/records/", label: "Academic Records" },
+  { href: "/god-mode/", label: "God mode" },
+  { href: "/readme/", label: "About" },
+];
+
+// Trailing slashes are used consistently across our own links, but compare
+// loosely so "/enrolment" and "/enrolment/" both count as current.
+const normalise = (path: string) => (path === "/" ? "/" : path.replace(/\/+$/, ""));
+const currentPath = normalise(Astro.url.pathname);
+const isCurrent = (href: string) => normalise(href) === currentPath;
+---
+
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="portal-header-group">
+      <div class="portal-header">
+        <div class="portal-header__inner">
+        <div class="portal-brand">
+          <svg
+            class="portal-crest"
+            viewBox="0 0 64 72"
+            width="44"
+            height="50"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d="M32 2 L60 13 V33 C60 52 48 65 32 70 C16 65 4 52 4 33 V13 Z"
+              fill="#1f2f4a"
+              stroke="#16223a"
+              stroke-width="1.5"
+            ></path>
+            <path
+              d="M8 38 Q 18 32 32 38 T 56 38"
+              fill="none"
+              stroke="#a4471f"
+              stroke-width="3"
+              stroke-linecap="round"
+            ></path>
+            <path
+              d="M8 46 Q 18 40 32 46 T 56 46"
+              fill="none"
+              stroke="#c5714a"
+              stroke-width="3"
+              stroke-linecap="round"
+            ></path>
+            <path
+              d="M8 54 Q 18 48 32 54 T 56 54"
+              fill="none"
+              stroke="#a4471f"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              opacity="0.85"
+            ></path>
+          </svg>
+          <p class="portal-wordmark">
+            <span class="portal-wordmark__line">Molonglo</span>
+            <span class="portal-wordmark__line">University</span>
+            <span class="portal-wordmark__tag">Student Portal</span>
+          </p>
+        </div>
+        <p class="portal-system-name">{PORTAL_NAME}</p>
+        <p class="portal-status">
+          {
+            username ? (
+              <>
+                Signed in as <strong>{username}</strong>
+              </>
+            ) : (
+              "Not signed in"
+            )
+          }
+        </p>
+        </div>
+      </div>
+
+      <nav aria-label="site" class="portal-toolbar">
+        <div class="portal-toolbar__inner">
+          <ul class="portal-toolbar__links">
+            {
+              navItems.map((item) => (
+                <li>
+                  <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="portal-toolbar__tools">
+            <div class="portal-search">
+              <label for="portal-search-input" class="visually-hidden">
+                Search in menu (coming soon)
+              </label>
+              <input
+                id="portal-search-input"
+                type="search"
+                placeholder="Search in Menu"
+                disabled
+              />
+            </div>
+            {
+              username && (
+                <form method="post" action="/api/logout" class="inline-form portal-logout">
+                  <button type="submit">Log out</button>
+                </form>
+              )
+            }
+          </div>
+        </div>
+      </nav>
+
+      <div class="portal-band" aria-hidden="true"></div>
+
+      <div class="portal-title-strip">
+        <h1>{heading}</h1>
+      </div>
+    </header>
+
+    <main class="portal-main">
+      <slot />
+    </main>
+
+    <footer class="portal-footer">
+      <p>
+        {UNIVERSITY_NAME} is fictional. This is a course prototype with no real authentication —
+        don't use a real password.
+      </p>
+    </footer>
+  </body>
+</html>

@@ -1,89 +1,126 @@
 ---
+// The portal hub. Logged out it's a plain sign-in prompt (still a real 200,
+// not a redirect, so the accessibility invariants can check it cold). Logged
+// in it's the tile homepage: live tiles for things this prototype actually
+// does, "under construction" tiles for the rest of a real student portal's
+// surface area.
+import Portal from "../layouts/Portal.astro";
+import Tile from "../components/Tile.astro";
 import { getSessionUser } from "../lib/auth";
-import { getCatalogueForUser } from "../lib/db";
-import "../styles.css";
+import { getCatalogueForUser, getCompletedMap } from "../lib/db";
+import { PORTAL_NAME } from "../lib/site";
 
 const username = getSessionUser(Astro.cookies);
-const catalogue = username ? getCatalogueForUser(username) : [];
 
-const STATUS_LABEL: Record<string, string> = {
-  eligible: "Eligible now",
-  blocked: "Not eligible",
-  enrolled: "Already enrolled",
-  passed: "Completed — passed",
-  failed: "Completed — failed",
-};
+let eligibleCount = 0;
+let enrolledCount = 0;
+let passedCount = 0;
+let failedCount = 0;
 
-// Group by status so the whole "which bucket am I in" question the real
-// enrolment flow only answers at the last step is answered here up front.
-const order = ["eligible", "enrolled", "blocked", "passed", "failed"] as const;
-const buckets = order
-  .map((status) => ({ status, courses: catalogue.filter((c) => c.status === status) }))
-  .filter((bucket) => bucket.courses.length > 0);
+if (username) {
+  const catalogue = getCatalogueForUser(username);
+  eligibleCount = catalogue.filter((c) => c.status === "eligible").length;
+  enrolledCount = catalogue.filter((c) => c.status === "enrolled").length;
+
+  const completed = getCompletedMap(username);
+  for (const passed of completed.values()) {
+    if (passed) passedCount += 1;
+    else failedCount += 1;
+  }
+}
+
+const hasTasks = eligibleCount > 0 && enrolledCount === 0;
+const tasksStatus = hasTasks
+  ? `You're eligible for ${eligibleCount} courses and not yet enrolled in any`
+  : "No current tasks";
 ---
 
-<!doctype html>
-<html lang="en-AU">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Enrol in a course</title>
-  </head>
-  <body>
-    <nav aria-label="site">
-      <a href="/">Enrol</a>
-      {username && <a href="/god-mode/">God mode</a>}
-      <a href="/readme/">About</a>
-    </nav>
-    <main>
-      <h1>Enrol in a course</h1>
-      {
-        !username ? (
-          <p>
-            <a href="/login/">Log in</a> to see which courses you're eligible for.
+<Portal title={`Student Homepage — ${PORTAL_NAME}`} heading="Student Homepage" username={username}>
+  {
+    !username ? (
+      <section class="signin-card">
+        <h2>Sign in to see your homepage</h2>
+        <p>
+          Log in to view your enrolment tasks, academic records, and the rest of your student
+          homepage.
+        </p>
+        <a class="button button-primary" href="/login/">
+          Log in
+        </a>
+      </section>
+    ) : (
+      <>
+        <section class="tile-section">
+          <h2>Attention</h2>
+          <div class="tile-grid">
+            <Tile
+              title="Announcements"
+              icon="announcements"
+              status="Semester 2 census date: 31 August"
+            />
+            <Tile
+              title="Tasks"
+              icon="tasks"
+              href={hasTasks ? "/enrolment/" : undefined}
+              status={tasksStatus}
+            />
+          </div>
+        </section>
+
+        <section class="tile-section">
+          <h2>Academic</h2>
+          <div class="tile-grid">
+            <Tile
+              title="Enrolment"
+              icon="enrolment"
+              href="/enrolment/"
+              status={`${eligibleCount} courses open to you`}
+            />
+            <Tile
+              title="Academic Records"
+              icon="records"
+              href="/records/"
+              status={`${passedCount} passed · ${failedCount} failed`}
+            />
+            <Tile title="Class Timetable" icon="timetable" construction />
+            <Tile title="Degree Planner" icon="degree" construction />
+            <Tile title="Requests" icon="requests" construction />
+            <Tile title="Graduation" icon="graduation" construction />
+          </div>
+        </section>
+
+        <section class="tile-section">
+          <h2>Finances</h2>
+          <div class="tile-grid">
+            <Tile title="Charges to Pay" icon="charges" construction />
+            <Tile title="Account Details" icon="account" construction />
+            <Tile title="Scholarships" icon="scholarships" construction />
+          </div>
+        </section>
+
+        <section class="tile-section">
+          <h2>Personal</h2>
+          <div class="tile-grid">
+            <Tile title="Personal Details" icon="personal" construction />
+            <Tile title="Additional Resources" icon="resources" construction />
+          </div>
+        </section>
+
+        <section class="tile-section tile-section--testing">
+          <h2>Testing tools</h2>
+          <p class="testing-note">
+            Not a university service — a developer aid for exercising this prototype.
           </p>
-        ) : (
-          <>
-            <p class="session-line">
-              Signed in as {username}. <form method="post" action="/api/logout" class="inline-form"><button>Log out</button></form>
-            </p>
-            <p>
-              Courses are sorted by whether your transcript already clears them — no more finding
-              out you needed a prerequisite on the last screen.
-            </p>
-            {buckets.map((bucket) => (
-              <section class={`bucket bucket-${bucket.status}`}>
-                <h2>{STATUS_LABEL[bucket.status]}</h2>
-                <ul>
-                  {bucket.courses.map((course) => (
-                    <li>
-                      <span class="code">{course.code}</span> {course.title}
-                      <span class="terms">({course.terms})</span>
-                      {course.status === "eligible" && (
-                        <form method="post" action="/api/enrol" class="inline-form">
-                          <input type="hidden" name="code" value={course.code} />
-                          <button>Enrol</button>
-                        </form>
-                      )}
-                      {course.status === "blocked" && (
-                        <p class="why">
-                          {course.requiresPermission && "Needs a permission code from the School. "}
-                          {course.groups.length > 0 &&
-                            `Requires: ${course.groups.map((g) => g.join(" or ")).join(" and ")}. `}
-                          {course.prereqNote}
-                        </p>
-                      )}
-                      {course.status !== "blocked" && course.prereqNote && (
-                        <p class="why">{course.prereqNote}</p>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-          </>
-        )
-      }
-    </main>
-  </body>
-</html>
+          <div class="tile-grid">
+            <Tile
+              title="God mode"
+              icon="godmode"
+              href="/god-mode/"
+              status="Set this account's transcript directly"
+            />
+          </div>
+        </section>
+      </>
+    )
+  }
+</Portal>

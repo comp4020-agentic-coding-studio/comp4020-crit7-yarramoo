@@ -1,0 +1,26 @@
+---
+// A single PeopleSoft-style homepage tile. When `construction` is set the
+// tile deliberately isn't a link — there's no page behind it yet — so it
+// renders as a <div> with a hazard-stripe ribbon instead of an <a>.
+import TileIcon from "./TileIcon.astro";
+
+interface Props {
+  title: string;
+  href?: string;
+  icon: string;
+  status?: string;
+  construction?: boolean;
+}
+
+const { title, href, icon, status, construction = false } = Astro.props;
+const isLink = Boolean(href) && !construction;
+const Tag = isLink ? "a" : "div";
+const classes = ["tile", construction && "tile--construction"].filter(Boolean).join(" ");
+---
+
+<Tag class={classes} href={isLink ? href : undefined}>
+  {construction && <span class="tile__ribbon">Under construction</span>}
+  <TileIcon name={icon} />
+  <h3 class="tile__title">{title}</h3>
+  {status && <p class="tile__status">{status}</p>}
+</Tag>
