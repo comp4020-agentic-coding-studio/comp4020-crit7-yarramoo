@@ -1,150 +1,21 @@
 ---
-// Flat, two-tone placeholder illustrations for homepage tiles, in the spirit
-// of PeopleSoft tile art: simple outlined objects with pastel fills, in the
-// Molonglo palette (navy #1f2f4a, terracotta #a4471f, plus pastel tints of
-// each). Purely decorative — the wrapping <svg> is aria-hidden. One entry per
-// tile "icon" name; keep this the only place that knows the palette details
-// so the coordinator can swap these for generated art later without touching
-// callers.
+// Tile illustrations were generated with recraft-v3 in one shared style prompt,
+// then trimmed and shrunk into public/tiles/<name>.png. Decorative: the tile
+// title already names the service.
 interface Props {
   name: string;
 }
 
 const { name } = Astro.props;
-
-const NAVY = "#1f2f4a";
-const ACCENT = "#a4471f";
-const ACCENT_SOFT = "#c5714a";
-const SAND_BG = "#f4e6d7";
-const NAVY_BG = "#dfe6ee";
-const PALE_ACCENT = "#f0cdb2";
-
-const icons: Record<string, string> = {
-  announcements: `
-    <circle cx="48" cy="48" r="46" fill="${SAND_BG}"/>
-    <path d="M28 40h14l24-12v40l-24-12H28a6 6 0 01-6-6v-4a6 6 0 016-6z" fill="${NAVY_BG}" stroke="${NAVY}" stroke-width="3" stroke-linejoin="round"/>
-    <path d="M66 34a10 10 0 010 20" fill="none" stroke="${ACCENT}" stroke-width="3" stroke-linecap="round"/>
-    <path d="M36 56l4 13a5 5 0 004.6 3.4 5 5 0 004.6-6.9l-3-9.5" fill="${ACCENT}" stroke="${NAVY}" stroke-width="2" stroke-linejoin="round"/>
-  `,
-  tasks: `
-    <circle cx="48" cy="48" r="46" fill="${NAVY_BG}"/>
-    <rect x="30" y="22" width="36" height="52" rx="4" fill="#fff" stroke="${NAVY}" stroke-width="3"/>
-    <rect x="40" y="18" width="16" height="8" rx="2" fill="${ACCENT}"/>
-    <path d="M37 38l4 4 8-8" fill="none" stroke="${NAVY}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <line x1="55" y1="40" x2="60" y2="40" stroke="${NAVY}" stroke-width="3" stroke-linecap="round"/>
-    <path d="M37 55l4 4 8-8" fill="none" stroke="${NAVY}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <line x1="55" y1="57" x2="60" y2="57" stroke="${NAVY}" stroke-width="3" stroke-linecap="round"/>
-    <line x1="36" y1="68" x2="60" y2="68" stroke="${ACCENT}" stroke-width="3" stroke-linecap="round"/>
-  `,
-  enrolment: `
-    <circle cx="48" cy="48" r="46" fill="${SAND_BG}"/>
-    <rect x="22" y="26" width="34" height="40" rx="4" fill="#fff" stroke="${NAVY}" stroke-width="3"/>
-    <line x1="22" y1="36" x2="56" y2="36" stroke="${NAVY}" stroke-width="3"/>
-    <line x1="30" y1="20" x2="30" y2="30" stroke="${NAVY}" stroke-width="3" stroke-linecap="round"/>
-    <line x1="48" y1="20" x2="48" y2="30" stroke="${NAVY}" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="66" cy="60" r="16" fill="#fff" stroke="${ACCENT}" stroke-width="3"/>
-    <line x1="66" y1="60" x2="66" y2="50" stroke="${ACCENT}" stroke-width="2.5" stroke-linecap="round"/>
-    <line x1="66" y1="60" x2="73" y2="63" stroke="${ACCENT}" stroke-width="2.5" stroke-linecap="round"/>
-  `,
-  records: `
-    <circle cx="48" cy="48" r="46" fill="${NAVY_BG}"/>
-    <path d="M36 62l-6 18 10-4.5 7 9.5 6-19" fill="${ACCENT}" stroke="${NAVY}" stroke-width="2.5" stroke-linejoin="round"/>
-    <path d="M60 62l6 18-10-4.5-7 9.5-6-19" fill="${ACCENT}" stroke="${NAVY}" stroke-width="2.5" stroke-linejoin="round"/>
-    <circle cx="48" cy="42" r="22" fill="#fff" stroke="${NAVY}" stroke-width="3"/>
-    <path d="M38 42l7 7 13-15" fill="none" stroke="${NAVY}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-  `,
-  timetable: `
-    <circle cx="48" cy="48" r="46" fill="${SAND_BG}"/>
-    <rect x="22" y="26" width="52" height="44" rx="4" fill="#fff" stroke="${NAVY}" stroke-width="3"/>
-    <rect x="22" y="26" width="52" height="12" rx="4" fill="${NAVY}"/>
-    <line x1="32" y1="20" x2="32" y2="32" stroke="${ACCENT}" stroke-width="3" stroke-linecap="round"/>
-    <line x1="64" y1="20" x2="64" y2="32" stroke="${ACCENT}" stroke-width="3" stroke-linecap="round"/>
-    <rect x="30" y="46" width="8" height="8" fill="${ACCENT}"/>
-    <rect x="44" y="46" width="8" height="8" fill="${NAVY}" opacity="0.45"/>
-    <rect x="58" y="46" width="8" height="8" fill="${NAVY}" opacity="0.45"/>
-    <rect x="30" y="58" width="8" height="8" fill="${NAVY}" opacity="0.45"/>
-  `,
-  degree: `
-    <circle cx="48" cy="48" r="46" fill="${NAVY_BG}"/>
-    <rect x="20" y="58" width="56" height="10" rx="2" fill="${NAVY}"/>
-    <rect x="24" y="48" width="48" height="10" rx="2" fill="${ACCENT}"/>
-    <rect x="28" y="38" width="40" height="10" rx="2" fill="#fff" stroke="${NAVY}" stroke-width="2.5"/>
-    <circle cx="62" cy="26" r="8" fill="${ACCENT_SOFT}" stroke="${NAVY}" stroke-width="2"/>
-    <path d="M62 18c0-3 2-4 4-5" fill="none" stroke="${NAVY}" stroke-width="2" stroke-linecap="round"/>
-  `,
-  requests: `
-    <circle cx="48" cy="48" r="46" fill="${SAND_BG}"/>
-    <path d="M26 44l22-14 22 14v28H26z" fill="#fff" stroke="${NAVY}" stroke-width="3" stroke-linejoin="round"/>
-    <line x1="20" y1="44" x2="76" y2="44" stroke="${NAVY}" stroke-width="3"/>
-    <rect x="38" y="54" width="14" height="18" fill="${NAVY_BG}" stroke="${NAVY}" stroke-width="2"/>
-    <rect x="56" y="56" width="16" height="20" rx="1" fill="#fff" stroke="${ACCENT}" stroke-width="2.5"/>
-    <line x1="59" y1="62" x2="69" y2="62" stroke="${ACCENT}" stroke-width="2"/>
-    <line x1="59" y1="68" x2="69" y2="68" stroke="${ACCENT}" stroke-width="2"/>
-  `,
-  graduation: `
-    <circle cx="48" cy="48" r="46" fill="${NAVY_BG}"/>
-    <path d="M48 30L16 44l32 13 32-13z" fill="${NAVY}"/>
-    <path d="M32 51v13c0 5.5 7.2 10 16 10s16-4.5 16-10V51" fill="none" stroke="${NAVY}" stroke-width="3" stroke-linecap="round"/>
-    <line x1="76" y1="44" x2="76" y2="63" stroke="${ACCENT}" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="76" cy="67" r="3.5" fill="${ACCENT}"/>
-  `,
-  charges: `
-    <circle cx="48" cy="48" r="46" fill="${SAND_BG}"/>
-    <ellipse cx="40" cy="63" rx="18" ry="8" fill="${ACCENT}" stroke="${NAVY}" stroke-width="2.5"/>
-    <ellipse cx="40" cy="55" rx="18" ry="8" fill="${PALE_ACCENT}" stroke="${NAVY}" stroke-width="2.5"/>
-    <ellipse cx="58" cy="43" rx="18" ry="8" fill="${ACCENT}" stroke="${NAVY}" stroke-width="2.5"/>
-    <ellipse cx="58" cy="35" rx="18" ry="8" fill="${PALE_ACCENT}" stroke="${NAVY}" stroke-width="2.5"/>
-  `,
-  account: `
-    <circle cx="48" cy="48" r="46" fill="${NAVY_BG}"/>
-    <path d="M48 20l27 15H21z" fill="${NAVY}"/>
-    <rect x="19" y="66" width="58" height="8" fill="${NAVY}"/>
-    <rect x="26" y="39" width="8" height="26" fill="#fff" stroke="${NAVY}" stroke-width="2.5"/>
-    <rect x="44" y="39" width="8" height="26" fill="${ACCENT}" stroke="${NAVY}" stroke-width="2.5"/>
-    <rect x="62" y="39" width="8" height="26" fill="#fff" stroke="${NAVY}" stroke-width="2.5"/>
-  `,
-  scholarships: `
-    <circle cx="48" cy="48" r="46" fill="${SAND_BG}"/>
-    <path d="M34 22l14 18 14-18" fill="none" stroke="${ACCENT}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="48" cy="58" r="20" fill="#fff" stroke="${NAVY}" stroke-width="3"/>
-    <circle cx="48" cy="58" r="12" fill="${ACCENT}"/>
-    <path d="M48 51l2.3 4.7 5.2.7-3.8 3.7.9 5.2-4.6-2.4-4.6 2.4.9-5.2-3.8-3.7 5.2-.7z" fill="#fff"/>
-  `,
-  personal: `
-    <circle cx="48" cy="48" r="46" fill="${NAVY_BG}"/>
-    <circle cx="48" cy="38" r="14" fill="${PALE_ACCENT}" stroke="${NAVY}" stroke-width="3"/>
-    <path d="M22 78c2-17 12.5-25.5 26-25.5S72 61 74 78z" fill="${ACCENT}" stroke="${NAVY}" stroke-width="3" stroke-linejoin="round"/>
-  `,
-  resources: `
-    <circle cx="48" cy="48" r="46" fill="${SAND_BG}"/>
-    <path d="M24 30c8-4 16-4 22 0v40c-6-4-14-4-22 0z" fill="#fff" stroke="${NAVY}" stroke-width="3" stroke-linejoin="round"/>
-    <path d="M70 30c-8-4-16-4-22 0v40c6-4 14-4 22 0z" fill="${NAVY_BG}" stroke="${NAVY}" stroke-width="3" stroke-linejoin="round"/>
-    <circle cx="70" cy="26" r="10" fill="${ACCENT}" stroke="${NAVY}" stroke-width="2"/>
-    <circle cx="70" cy="26" r="3.5" fill="#fff"/>
-    <line x1="70" y1="13" x2="70" y2="17" stroke="${NAVY}" stroke-width="2"/>
-    <line x1="70" y1="35" x2="70" y2="39" stroke="${NAVY}" stroke-width="2"/>
-    <line x1="57" y1="26" x2="61" y2="26" stroke="${NAVY}" stroke-width="2"/>
-    <line x1="79" y1="26" x2="83" y2="26" stroke="${NAVY}" stroke-width="2"/>
-  `,
-  godmode: `
-    <circle cx="48" cy="48" r="46" fill="${NAVY_BG}"/>
-    <path d="M52 20L30 56h14l-4 20 26-38H52z" fill="${ACCENT}" stroke="${NAVY}" stroke-width="2.5" stroke-linejoin="round"/>
-    <circle cx="66" cy="28" r="3" fill="${NAVY}"/>
-    <circle cx="73" cy="41" r="2" fill="${NAVY}"/>
-    <circle cx="60" cy="19" r="2" fill="${NAVY}"/>
-  `,
-};
-
-const inner = icons[name] ?? icons.personal;
 ---
 
-<svg
-  class="tile-icon"
-  viewBox="0 0 96 96"
-  width="96"
-  height="96"
-  aria-hidden="true"
-  focusable="false"
-  xmlns="http://www.w3.org/2000/svg"
-  set:html={inner}
-/>
+<img class="tile-icon" src={`/tiles/${name}.png`} alt="" width="84" height="84" loading="lazy" />
+
+<style>
+  .tile-icon {
+    width: 84px;
+    height: 84px;
+    /* The art sits on white; multiply drops that white into whatever tint the tile has. */
+    mix-blend-mode: multiply;
+  }
+</style>

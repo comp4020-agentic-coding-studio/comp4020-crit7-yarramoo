@@ -35,49 +35,14 @@ const isCurrent = (href: string) => normalise(href) === currentPath;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    <link rel="icon" type="image/png" href="/crest.png" />
   </head>
   <body>
     <header class="portal-header-group">
       <div class="portal-header">
         <div class="portal-header__inner">
         <div class="portal-brand">
-          <svg
-            class="portal-crest"
-            viewBox="0 0 64 72"
-            width="44"
-            height="50"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path
-              d="M32 2 L60 13 V33 C60 52 48 65 32 70 C16 65 4 52 4 33 V13 Z"
-              fill="#1f2f4a"
-              stroke="#16223a"
-              stroke-width="1.5"
-            ></path>
-            <path
-              d="M8 38 Q 18 32 32 38 T 56 38"
-              fill="none"
-              stroke="#a4471f"
-              stroke-width="3"
-              stroke-linecap="round"
-            ></path>
-            <path
-              d="M8 46 Q 18 40 32 46 T 56 46"
-              fill="none"
-              stroke="#c5714a"
-              stroke-width="3"
-              stroke-linecap="round"
-            ></path>
-            <path
-              d="M8 54 Q 18 48 32 54 T 56 54"
-              fill="none"
-              stroke="#a4471f"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              opacity="0.85"
-            ></path>
-          </svg>
+          <img class="portal-crest" src="/crest.png" alt="" width="47" height="56" />
           <p class="portal-wordmark">
             <span class="portal-wordmark__line">Molonglo</span>
             <span class="portal-wordmark__line">University</span>
