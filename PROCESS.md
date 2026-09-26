@@ -34,9 +34,12 @@ mangled prerequisites, so a Sonnet worker rebuilt them from the raw text
 Cheap models can fetch data, but the judgement needs checking.
 Headless-Chrome screenshots, not green tests, caught the broken phone layout
 ([`02eb620`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/02eb620)).
+I then asked whether rules like "6 units of MATH" affected eligibility. They didn't, so
+the checker now handles unit counts, exclusions and incompatibilities
+([`72f951c`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/72f951c)).
 
 Every flow was smoke-tested with `curl`; the accessibility invariants cover each
 logged-out page.
 
 Full range:
-[`378f1ed...02eb620`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/compare/378f1ed...02eb620).
+[`378f1ed...72f951c`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/compare/378f1ed...72f951c).
