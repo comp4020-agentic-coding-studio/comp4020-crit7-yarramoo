@@ -1,8 +1,25 @@
 ---
-import { listMessages } from "../lib/db";
+import { getSessionUser } from "../lib/auth";
+import { getCatalogueForUser } from "../lib/db";
 import "../styles.css";
 
-const messages = listMessages();
+const username = getSessionUser(Astro.cookies);
+const catalogue = username ? getCatalogueForUser(username) : [];
+
+const STATUS_LABEL: Record<string, string> = {
+  eligible: "Eligible now",
+  blocked: "Not eligible",
+  enrolled: "Already enrolled",
+  passed: "Completed — passed",
+  failed: "Completed — failed",
+};
+
+// Group by status so the whole "which bucket am I in" question the real
+// enrolment flow only answers at the last step is answered here up front.
+const order = ["eligible", "enrolled", "blocked", "passed", "failed"] as const;
+const buckets = order
+  .map((status) => ({ status, courses: catalogue.filter((c) => c.status === status) }))
+  .filter((bucket) => bucket.courses.length > 0);
 ---
 
 <!doctype html>
@@ -10,44 +27,63 @@ const messages = listMessages();
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>COMP4020 prototype</title>
+    <title>Enrol in a course</title>
   </head>
   <body>
     <nav aria-label="site">
-      <a href="/">Guestbook</a>
+      <a href="/">Enrol</a>
+      {username && <a href="/god-mode/">God mode</a>}
       <a href="/readme/">About</a>
     </nav>
     <main>
-      <h1>Guestbook</h1>
-      <p>
-        A minimal full-stack starter: messages live in SQLite on the machine's
-        volume (state survives a reload and a redeploy), and new messages
-        appear in every open tab over a server-sent-events stream — open this
-        page twice and sign it in one. Replace all of this with your own
-        prototype.
-      </p>
-      <form method="post" action="/api/messages">
-        <label for="body">Leave a message</label>
-        <input id="body" name="body" required maxlength="500" />
-        <button>Sign</button>
-      </form>
-      <ul id="messages">
-        {messages.map((message) => <li>{message.body}</li>)}
-      </ul>
+      <h1>Enrol in a course</h1>
+      {
+        !username ? (
+          <p>
+            <a href="/login/">Log in</a> to see which courses you're eligible for.
+          </p>
+        ) : (
+          <>
+            <p class="session-line">
+              Signed in as {username}. <form method="post" action="/api/logout" class="inline-form"><button>Log out</button></form>
+            </p>
+            <p>
+              Courses are sorted by whether your transcript already clears them — no more finding
+              out you needed a prerequisite on the last screen.
+            </p>
+            {buckets.map((bucket) => (
+              <section class={`bucket bucket-${bucket.status}`}>
+                <h2>{STATUS_LABEL[bucket.status]}</h2>
+                <ul>
+                  {bucket.courses.map((course) => (
+                    <li>
+                      <span class="code">{course.code}</span> {course.title}
+                      <span class="terms">({course.terms})</span>
+                      {course.status === "eligible" && (
+                        <form method="post" action="/api/enrol" class="inline-form">
+                          <input type="hidden" name="code" value={course.code} />
+                          <button>Enrol</button>
+                        </form>
+                      )}
+                      {course.status === "blocked" && (
+                        <p class="why">
+                          {course.requiresPermission && "Needs a permission code from the School. "}
+                          {course.groups.length > 0 &&
+                            `Requires: ${course.groups.map((g) => g.join(" or ")).join(" and ")}. `}
+                          {course.prereqNote}
+                        </p>
+                      )}
+                      {course.status !== "blocked" && course.prereqNote && (
+                        <p class="why">{course.prereqNote}</p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </>
+        )
+      }
     </main>
-    <script>
-      // The live half of the demo: subscribe to the SSE stream and prepend
-      // messages as they arrive. The form itself needs none of this — its
-      // POST + redirect re-renders the submitting tab from SQLite; this
-      // stream is how every other tab finds out.
-      const list = document.querySelector("#messages");
-      const source = new EventSource("/api/events");
-      source.addEventListener("message", (event) => {
-        const message = JSON.parse(event.data);
-        const item = document.createElement("li");
-        item.textContent = message.body;
-        list?.prepend(item);
-      });
-    </script>
   </body>
 </html>

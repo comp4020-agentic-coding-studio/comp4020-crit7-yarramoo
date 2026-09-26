@@ -1,0 +1,40 @@
+---
+import { getSessionUser } from "../lib/auth";
+import "../styles.css";
+
+const username = getSessionUser(Astro.cookies);
+if (!username) return Astro.redirect("/login/", 302);
+---
+
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Welcome — course enrolment</title>
+  </head>
+  <body>
+    <nav aria-label="site">
+      <a href="/">Enrol</a>
+      <a href="/god-mode/">God mode</a>
+      <a href="/readme/">About</a>
+    </nav>
+    <main>
+      <h1>Welcome, {username}</h1>
+      <p>
+        First time we've seen this username, so there's no course history for it yet. Want a
+        plausible one made up — a 1st/2nd/3rd year student whose completed courses actually
+        satisfy each other's prerequisites — so there's something to look at straight away? You
+        can always fix it up by hand afterwards in god mode.
+      </p>
+      <form method="post" action="/api/onboard">
+        <input type="hidden" name="action" value="random" />
+        <button>Make up a transcript for me</button>
+      </form>
+      <form method="post" action="/api/onboard">
+        <input type="hidden" name="action" value="skip" />
+        <button>Start with nothing completed</button>
+      </form>
+    </main>
+  </body>
+</html>
