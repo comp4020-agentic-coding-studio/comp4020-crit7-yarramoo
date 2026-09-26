@@ -53,12 +53,15 @@ revealed after it**. Everything else follows from that:
   imitate no real institution's marks.
 - **Real prerequisite data, not toy examples.** The courses, terms, and
   prerequisite structure come from ANU's actual Programs & Courses pages,
-  modelled as AND-of-OR groups (a course can need *A and (B or C)*) plus a
-  free-text note for anything not checkable in that shape — unit-count
-  requirements, program restrictions, "apply via form" style permission
-  gates. That note is deliberately not machine-checked; some ANU
-  prerequisites genuinely aren't a boolean function of a course list.
-  Where a course has alternative pathways, only the main one is checked and
+  modelled as AND-of-OR groups (a course can need *A and (B or C)*). An
+  option can be a course, a unit count ("6 units of MATH, excluding
+  MATH1003", "12 units of 2000-level COMP"), or a co-requisite you may be
+  enrolled in right now. Incompatible courses block you. A blocked row says
+  what's missing and how far off you are ("24 units of COMP (you have 6)").
+  Three things genuinely can't be checked from a transcript: program
+  membership, mark thresholds and convener discretion. An otherwise-eligible
+  course with one of those says "Eligible · check requirement" rather than
+  pretending to know. Where a course has alternative pathways, only the main one is checked and
   the rest are listed in the note. The catalogue is a sample, so a few
   courses depend on courses outside it, such as superseded BIOL codes.
   Those courses stay "not eligible", and god mode can't mark their

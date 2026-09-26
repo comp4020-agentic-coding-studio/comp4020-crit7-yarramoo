@@ -6,18 +6,20 @@
       "code": "ECON1100",
       "title": "Economics I (H)",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "ECON1101"
         ]
       ],
-      "note": "Incompatible with ECON1102."
+      "incompatible": ["ECON1102"]
     },
     {
       "code": "ECON1101",
       "title": "Microeconomics 1",
       "terms": "First Semester/Second Semester/Spring Session",
+      "units": 6,
       "requiresPermission": false,
       "groups": []
     },
@@ -25,70 +27,82 @@
       "code": "ECON1102",
       "title": "Macroeconomics 1",
       "terms": "First Semester/Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
-          "ECON1101"
+          { "code": "ECON1101", "orEnrolled": true }
         ]
       ],
-      "note": "ECON1101 may be completed or taken concurrently. Incompatible with ECON1100."
+      "incompatible": ["ECON1100"]
     },
     {
       "code": "ECON2009",
       "title": "Labour Economics and Industrial Relations",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
-          "ECON2101"
+          { "code": "ECON2101", "orEnrolled": true }
         ]
-      ],
-      "note": "ECON2101 may be completed or taken concurrently."
+      ]
     },
     {
       "code": "ECON2013",
       "title": "Behavioral Economics",
       "terms": "",
+      "units": 6,
       "requiresPermission": false,
-      "groups": [],
-      "note": "Requires 24 units of any courses."
+      "groups": [
+        [
+          { "units": 24 }
+        ]
+      ]
     },
     {
       "code": "ECON2014",
       "title": "Managerial Economics",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "ECON1101"
         ]
       ],
-      "note": "Incompatible with ECON6014."
+      "incompatible": ["ECON6014"]
     },
     {
       "code": "ECON2016",
       "title": "Economics II (H)",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "ECON2101"
         ]
       ],
-      "note": "Incompatible with ECON2102, ECON2112, and ECON1100."
+      "incompatible": ["ECON2102", "ECON2112", "ECON1100"]
     },
     {
       "code": "ECON2026",
       "title": "Money and Banking",
       "terms": "",
+      "units": 6,
       "requiresPermission": false,
-      "groups": [],
-      "note": "Requires 24 units of any courses."
+      "groups": [
+        [
+          { "units": 24 }
+        ]
+      ]
     },
     {
       "code": "ECON2101",
       "title": "Microeconomics 2",
       "terms": "First Semester/Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -100,18 +114,19 @@
       "code": "ECON3004",
       "title": "Health Economics",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
-          "ECON2101"
+          { "code": "ECON2101", "orEnrolled": true }
         ]
-      ],
-      "note": "ECON2101 may be completed or taken concurrently."
+      ]
     },
     {
       "code": "ECON3006",
       "title": "Financial Economics",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -123,6 +138,7 @@
       "code": "ECON3020",
       "title": "Special Topics in Economics: Computing and Data Skills",
       "terms": "",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -140,6 +156,7 @@
       "code": "ECON3021",
       "title": "International Monetary Economics",
       "terms": "",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -155,6 +172,7 @@
       "code": "ECON3023",
       "title": "Economic Policy Issues",
       "terms": "",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -170,29 +188,35 @@
       "code": "ECON3056",
       "title": "PPE Integration 3: Classic Literature in Politics, Philosophy and Economics",
       "terms": "",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "ECON2101"
+        ],
+        [
+          { "units": 48, "levels": [1000] }
         ]
       ],
-      "note": "Requires enrolment in the Bachelor of Politics, Philosophy and Economics and completion of 48 units of 1000-level courses."
+      "unchecked": "Requires enrolment in the Bachelor of Politics, Philosophy and Economics."
     },
     {
       "code": "ECON4040",
       "title": "Applied Welfare Economics",
       "terms": "",
+      "units": 6,
       "requiresPermission": false,
       "groups": [],
-      "note": "Requires enrolment in the HECON program."
+      "unchecked": "Requires enrolment in the HECON program."
     },
     {
       "code": "ECON4403",
       "title": "Economic Policy Issues",
       "terms": "",
+      "units": 6,
       "requiresPermission": false,
       "groups": [],
-      "note": "Incompatible with ECON6003."
+      "incompatible": ["ECON6003"]
     }
   ]
 }

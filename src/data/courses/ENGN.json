@@ -6,6 +6,7 @@
       "code": "ENGN1211",
       "title": "Engineering Design 1: Discovering Engineering",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": []
     },
@@ -13,6 +14,7 @@
       "code": "ENGN1217",
       "title": "Introduction to Mechanics",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": []
     },
@@ -20,6 +22,7 @@
       "code": "ENGN1218",
       "title": "Introduction to Electronics",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": []
     },
@@ -27,6 +30,7 @@
       "code": "ENGN2217",
       "title": "Mechanical Systems and Design",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -38,6 +42,7 @@
       "code": "ENGN2218",
       "title": "Electronic Systems and Design",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -49,6 +54,7 @@
       "code": "ENGN2219",
       "title": "Computer Architecture",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -57,12 +63,13 @@
           "COMP1730"
         ]
       ],
-      "note": "Incompatible with COMP2300, COMP6300, and COMP6719."
+      "incompatible": ["COMP2300", "COMP6300", "COMP6719"]
     },
     {
       "code": "ENGN2222",
       "title": "Engineering Thermodynamics",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -75,6 +82,7 @@
       "code": "ENGN2228",
       "title": "Signals and Systems",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -89,86 +97,102 @@
       "code": "ENGN2300",
       "title": "Engineering Design 2: Systems Approaches for Design",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "ENGN1211"
         ]
       ],
-      "note": "Incompatible with ENGN2225."
+      "incompatible": ["ENGN2225"]
     },
     {
       "code": "ENGN3013",
       "title": "Engineering for a Humanitarian Context",
       "terms": "Summer Session/Winter Session",
+      "units": 6,
       "requiresPermission": true,
       "groups": [],
-      "note": "Requires convenor permission; eligibility includes participation in a relevant short-term immersive experience and at least 96 units (two years) of engineering studies or equivalent."
+      "unchecked": "Requires participation in a relevant short-term immersive experience and at least 96 units of engineering studies or equivalent."
     },
     {
       "code": "ENGN3100",
       "title": "Practical Experience",
       "terms": "Summer Session/First Semester/Winter Session/Second Semester",
+      "units": 0,
       "requiresPermission": false,
-      "groups": [],
-      "note": "Requires at least 48 units of university courses."
+      "groups": [
+        [
+          { "units": 48 }
+        ]
+      ]
     },
     {
       "code": "ENGN3200",
       "title": "Engineering Internship",
       "terms": "Summer Session/First Semester/Autumn Session/Winter Session/Second Semester/Spring Session",
+      "units": 6,
       "requiresPermission": false,
-      "groups": [],
-      "note": "Requires at least 96 units of Engineering program courses and a minimum GPA of 5.0; internships are competitive and other requirements may apply."
+      "groups": [
+        [
+          { "units": 96, "subjects": ["ENGN"] }
+        ]
+      ],
+      "unchecked": "Requires a minimum GPA of 5.0; internships are competitive and other requirements may apply."
     },
     {
       "code": "ENGN3223",
       "title": "Control Systems",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [],
-      "note": "Incompatible with ENGN6223."
+      "incompatible": ["ENGN6223"]
     },
     {
       "code": "ENGN3224",
       "title": "Fluid Mechanics and Heat Transfer",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "ENGN2222"
         ]
       ],
-      "note": "Incompatible with ENGN6224."
+      "incompatible": ["ENGN6224"]
     },
     {
       "code": "ENGN3226",
       "title": "Digital Communications",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "ENGN2228"
         ]
       ],
-      "note": "Incompatible with ENGN6626."
+      "incompatible": ["ENGN6626"]
     },
     {
       "code": "ENGN4122",
       "title": "Intelligent Autonomous Systems",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "ENGN3223"
         ]
       ],
-      "note": "Incompatible with ENGN8122 and ENGN8536."
+      "incompatible": ["ENGN8122", "ENGN8536"]
     },
     {
       "code": "ENGN4200",
       "title": "Individual Project",
       "terms": "First Semester/Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [

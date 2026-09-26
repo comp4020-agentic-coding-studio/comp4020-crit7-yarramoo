@@ -32,15 +32,22 @@ export const courses = sqliteTable("courses", {
   code: text().primaryKey(),
   title: text().notNull(),
   terms: text().notNull(),
+  units: int().notNull().default(6),
   requiresPermission: int("requires_permission", { mode: "boolean" })
     .notNull()
     .default(false),
   prereqNote: text("prereq_note"),
+  // The part of a real requisite the app can't verify at all (a program
+  // restriction, a convener sign-off) — an AND-requirement shown alongside
+  // an otherwise-eligible result, never checked against a transcript.
+  unchecked: text(),
 });
 
 // An AND-of-ORs: within one `group`, completing any one `requiredCode`
-// satisfies it; a course is prerequisite-clear only once every group it has
-// is satisfied.
+// (or, when `orEnrolled` is set, being currently enrolled in it) satisfies
+// it; a course is prerequisite-clear only once every group it has is
+// satisfied. A group's full option set is the union of these rows and the
+// matching `unitClauses` rows for the same (courseCode, group).
 export const prerequisiteGroups = sqliteTable(
   "prerequisite_groups",
   {
@@ -50,8 +57,40 @@ export const prerequisiteGroups = sqliteTable(
       .references(() => courses.code),
     group: int().notNull(),
     requiredCode: text("required_code").notNull(),
+    orEnrolled: int("or_enrolled", { mode: "boolean" }).notNull().default(false),
   },
   (table) => [uniqueIndex("prerequisite_groups_unique").on(table.courseCode, table.group, table.requiredCode)],
+);
+
+// A unit-count option within a group (e.g. "24 units of COMP", "6 units of
+// 1000-level MATH excl. MATH1003") — the other kind of option a group can
+// offer alongside a specific required course. `subjects`, `levels` and
+// `exclude` are stored comma-joined since sqlite has no array column; empty
+// means "no filter" for subjects/levels, and "excludes nothing" for exclude.
+export const unitClauses = sqliteTable("unit_clauses", {
+  id: int().primaryKey({ autoIncrement: true }),
+  courseCode: text("course_code")
+    .notNull()
+    .references(() => courses.code),
+  group: int().notNull(),
+  minUnits: int("min_units").notNull(),
+  subjects: text(),
+  levels: text(),
+  exclude: text(),
+});
+
+// A course a student can't take if they've already PASSED the other one —
+// distinct from a prerequisite group, which is an AND-of-ORs of things a
+// student needs; this is a straight block.
+export const incompatibilities = sqliteTable(
+  "incompatibilities",
+  {
+    courseCode: text("course_code")
+      .notNull()
+      .references(() => courses.code),
+    incompatibleCode: text("incompatible_code").notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.courseCode, table.incompatibleCode] })],
 );
 
 // There's no real identity provider here — see src/lib/auth.ts for what
@@ -102,6 +141,8 @@ export const enrolments = sqliteTable(
 export type SubjectArea = typeof subjectAreas.$inferSelect;
 export type Course = typeof courses.$inferSelect;
 export type PrerequisiteGroup = typeof prerequisiteGroups.$inferSelect;
+export type UnitClause = typeof unitClauses.$inferSelect;
+export type Incompatibility = typeof incompatibilities.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type CompletedCourse = typeof completedCourses.$inferSelect;
 export type Enrolment = typeof enrolments.$inferSelect;

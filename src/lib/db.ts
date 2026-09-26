@@ -5,14 +5,17 @@ import { and, eq, like } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { subjectSeeds } from "./course-data";
+import { describeOption, evaluate, type EligibilityCourse, type Option, type Student } from "./eligibility";
 import {
   completedCourses,
   type Course,
   courses,
   enrolments,
+  incompatibilities,
   prerequisiteGroups,
   type SubjectArea,
   subjectAreas,
+  unitClauses,
   type User,
   users,
 } from "./schema";
@@ -51,21 +54,53 @@ function seed() {
         const row = {
           title: c.title,
           terms: c.terms,
+          units: c.units,
           requiresPermission: c.requiresPermission,
           prereqNote: c.note ?? null,
+          unchecked: c.unchecked ?? null,
         };
         tx.insert(courses)
           .values({ code: c.code, ...row })
           .onConflictDoUpdate({ target: courses.code, set: row })
           .run();
+
         tx.delete(prerequisiteGroups).where(eq(prerequisiteGroups.courseCode, c.code)).run();
+        tx.delete(unitClauses).where(eq(unitClauses.courseCode, c.code)).run();
+        tx.delete(incompatibilities).where(eq(incompatibilities.courseCode, c.code)).run();
+
         c.groups.forEach((group, groupIndex) => {
-          for (const requiredCode of new Set(group)) {
+          // A group's specific-course options collapse to one row per code
+          // (orEnrolled true if any option for that code asked for it); its
+          // unit-count options each get their own unitClauses row.
+          const codeOptions = new Map<string, boolean>();
+          for (const option of group) {
+            if (typeof option === "string") {
+              if (!codeOptions.has(option)) codeOptions.set(option, false);
+            } else if ("code" in option) {
+              codeOptions.set(option.code, (codeOptions.get(option.code) ?? false) || Boolean(option.orEnrolled));
+            } else {
+              tx.insert(unitClauses)
+                .values({
+                  courseCode: c.code,
+                  group: groupIndex,
+                  minUnits: option.units,
+                  subjects: option.subjects && option.subjects.length > 0 ? option.subjects.join(",") : null,
+                  levels: option.levels && option.levels.length > 0 ? option.levels.join(",") : null,
+                  exclude: option.exclude && option.exclude.length > 0 ? option.exclude.join(",") : null,
+                })
+                .run();
+            }
+          }
+          for (const [requiredCode, orEnrolled] of codeOptions) {
             tx.insert(prerequisiteGroups)
-              .values({ courseCode: c.code, group: groupIndex, requiredCode })
+              .values({ courseCode: c.code, group: groupIndex, requiredCode, orEnrolled })
               .run();
           }
         });
+
+        for (const incompatibleCode of new Set(c.incompatible)) {
+          tx.insert(incompatibilities).values({ courseCode: c.code, incompatibleCode }).run();
+        }
       }
     }
   });
@@ -160,24 +195,32 @@ export function enrol(username: string, code: string): void {
   db.insert(enrolments).values({ username, courseCode: code }).onConflictDoNothing().run();
 }
 
-// A course is prerequisite-clear once every one of its OR-groups has at
-// least one *passed* match — a failed attempt doesn't satisfy a prerequisite,
-// and an empty group list is vacuously clear. `requiresPermission` courses
-// are always blocked regardless: a transcript can't verify a permission code
-// or competitive entry.
+// A course is blocked if it requires permission (a transcript can't verify a
+// permission code or competitive entry), if any of its groups is unmet, or if
+// the student has PASSED a course it's incompatible with — otherwise, once a
+// transcript places it as neither completed nor already enrolled, it's
+// eligible. See eligibility.ts for what "a group is unmet" and "incompatible"
+// mean in detail; this is just where that pure logic meets the DB rows.
 export interface CatalogueEntry {
   code: string;
   title: string;
   terms: string;
+  units: number;
   prereqNote: string | null;
+  unchecked: string | null;
   requiresPermission: boolean;
-  groups: string[][];
+  // One line of human-readable text per unmet group, e.g. "6 units of MATH
+  // (you have 0) or COMP1600" — options within a group joined with " or ".
+  unmetGroups: string[];
+  incompatibleWith: string[];
   status: "passed" | "failed" | "enrolled" | "eligible" | "blocked";
 }
 
 export function getCatalogueForUser(username: string): CatalogueEntry[] {
   const allCourses = listCourses();
   const allGroups = db.select().from(prerequisiteGroups).all();
+  const allUnitClauses = db.select().from(unitClauses).all();
+  const allIncompatibilities = db.select().from(incompatibilities).all();
   const completed = getCompletedMap(username);
   const passedSet = new Set([...completed].filter(([, passed]) => passed).map(([code]) => code));
   const enrolledSet = new Set(
@@ -189,31 +232,70 @@ export function getCatalogueForUser(username: string): CatalogueEntry[] {
       .map((r) => r.courseCode),
   );
 
-  const groupsByCourse = new Map<string, Map<number, string[]>>();
+  const unitsByCode = new Map(allCourses.map((c) => [c.code, c.units]));
+  const student: Student = {
+    passed: passedSet,
+    enrolled: enrolledSet,
+    unitsOf: (code) => unitsByCode.get(code) ?? 6,
+  };
+
+  // A course's group N is the union of its prerequisiteGroups rows and
+  // unitClauses rows sharing that group index.
+  const groupsByCourse = new Map<string, Map<number, Option[]>>();
+  const groupFor = (courseCode: string, group: number): Option[] => {
+    if (!groupsByCourse.has(courseCode)) groupsByCourse.set(courseCode, new Map());
+    const forCourse = groupsByCourse.get(courseCode)!;
+    if (!forCourse.has(group)) forCourse.set(group, []);
+    return forCourse.get(group)!;
+  };
   for (const row of allGroups) {
-    if (!groupsByCourse.has(row.courseCode)) groupsByCourse.set(row.courseCode, new Map());
-    const forCourse = groupsByCourse.get(row.courseCode)!;
-    if (!forCourse.has(row.group)) forCourse.set(row.group, []);
-    forCourse.get(row.group)!.push(row.requiredCode);
+    groupFor(row.courseCode, row.group).push(
+      row.orEnrolled ? { code: row.requiredCode, orEnrolled: true } : row.requiredCode,
+    );
+  }
+  for (const row of allUnitClauses) {
+    groupFor(row.courseCode, row.group).push({
+      units: row.minUnits,
+      subjects: row.subjects ? row.subjects.split(",") : undefined,
+      levels: row.levels ? row.levels.split(",").map(Number) : undefined,
+      exclude: row.exclude ? row.exclude.split(",") : undefined,
+    });
+  }
+
+  const incompatibleByCourse = new Map<string, string[]>();
+  for (const row of allIncompatibilities) {
+    if (!incompatibleByCourse.has(row.courseCode)) incompatibleByCourse.set(row.courseCode, []);
+    incompatibleByCourse.get(row.courseCode)!.push(row.incompatibleCode);
   }
 
   return allCourses.map((course): CatalogueEntry => {
     const groups = [...(groupsByCourse.get(course.code)?.values() ?? [])];
-    const prereqsClear = groups.every((group) => group.some((code) => passedSet.has(code)));
+    const eligibilityCourse: EligibilityCourse = {
+      code: course.code,
+      requiresPermission: course.requiresPermission,
+      groups,
+      incompatible: incompatibleByCourse.get(course.code) ?? [],
+    };
+    const result = evaluate(eligibilityCourse, student);
 
     let status: CatalogueEntry["status"];
     if (completed.has(course.code)) status = completed.get(course.code) ? "passed" : "failed";
     else if (enrolledSet.has(course.code)) status = "enrolled";
-    else if (course.requiresPermission || !prereqsClear) status = "blocked";
+    else if (!result.clear) status = "blocked";
     else status = "eligible";
 
     return {
       code: course.code,
       title: course.title,
       terms: course.terms,
+      units: course.units,
       prereqNote: course.prereqNote,
+      unchecked: course.unchecked,
       requiresPermission: course.requiresPermission,
-      groups,
+      unmetGroups: result.unmetGroups.map((group) =>
+        group.map((option) => describeOption(option, student)).join(" or "),
+      ),
+      incompatibleWith: result.incompatibleWith,
       status,
     };
   });

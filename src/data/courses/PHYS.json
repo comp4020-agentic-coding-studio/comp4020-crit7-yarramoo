@@ -6,14 +6,16 @@
       "code": "PHYS1001",
       "title": "Foundations of Physics",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [],
-      "note": "Incompatible with PHYS1101 and PHYS1201, including concurrent enrolment."
+      "incompatible": ["PHYS1101", "PHYS1201"]
     },
     {
       "code": "PHYS1004",
       "title": "Life Physics",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": []
     },
@@ -21,35 +23,36 @@
       "code": "PHYS1101",
       "title": "Physics I",
       "terms": "First Semester/Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
-          "MATH1013",
-          "MATH1115"
+          { "code": "MATH1013", "orEnrolled": true },
+          { "code": "MATH1115", "orEnrolled": true }
         ]
-      ],
-      "note": "The MATH requirement may be completed or studied concurrently."
+      ]
     },
     {
       "code": "PHYS1201",
       "title": "Physics 2",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
-          "PHYS1101"
+          { "code": "PHYS1101", "orEnrolled": true }
         ],
         [
-          "MATH1013",
-          "MATH1115"
+          { "code": "MATH1013", "orEnrolled": true },
+          { "code": "MATH1115", "orEnrolled": true }
         ]
-      ],
-      "note": "PHYS1101 and the MATH requirement may be completed or taken concurrently."
+      ]
     },
     {
       "code": "PHYS2013",
       "title": "Quantum Mechanics",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -70,6 +73,7 @@
       "code": "PHYS2016",
       "title": "Electromagnetism",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -84,6 +88,7 @@
       "code": "PHYS2020",
       "title": "Thermal and Statistical Physics",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -104,6 +109,7 @@
       "code": "PHYS2101",
       "title": "Nuclear and Radiation Physics",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -116,35 +122,42 @@
           "MATH1115"
         ]
       ],
-      "note": "Incompatible with PHYS6601."
+      "incompatible": ["PHYS6601"]
     },
     {
       "code": "PHYS2201",
       "title": "Classical Mechanics",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "PHYS1201"
         ],
         [
-          "MATH2306"
+          { "code": "MATH2306", "orEnrolled": true }
         ]
       ],
-      "note": "MATH2306 may be completed or studied concurrently. Incompatible with PHYS2017, PHYS3001, and PHYS3034."
+      "incompatible": ["PHYS2017", "PHYS3001", "PHYS3034"]
     },
     {
       "code": "PHYS2205",
       "title": "Physics for Future Leaders",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
-      "groups": [],
-      "note": "Requires 24 units towards a degree. Incompatible with PHYS6205."
+      "groups": [
+        [
+          { "units": 24 }
+        ]
+      ],
+      "incompatible": ["PHYS6205"]
     },
     {
       "code": "PHYS3032",
       "title": "Solid State Physics",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -152,24 +165,26 @@
           "PHYS2013"
         ]
       ],
-      "note": "Incompatible with PHYS6032."
+      "incompatible": ["PHYS6032"]
     },
     {
       "code": "PHYS3039",
       "title": "Climate Dynamics",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "PHYS2201"
         ]
       ],
-      "note": "Incompatible with EMSC3039."
+      "incompatible": ["EMSC3039"]
     },
     {
       "code": "PHYS3042",
       "title": "Research Topics Physics",
       "terms": "Summer Session/First Semester/Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -184,30 +199,35 @@
       "code": "PHYS3051",
       "title": "Applied Optics",
       "terms": "Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "PHYS2201"
         ]
       ],
-      "note": "Alternatively: PHYS1201 and ENGN2228. Incompatible with PHYS6502, ENGN4613, and ENGN6613."
+      "incompatible": ["PHYS6502", "ENGN4613", "ENGN6613"],
+      "note": "Alternatively: PHYS1201 and ENGN2228."
     },
     {
       "code": "PHYS3057",
       "title": "Optical Physics",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
           "PHYS2201"
         ]
       ],
-      "note": "Alternatively: PHYS1201 and ENGN2228. Incompatible with PHYS6500, ENGN3512, and ENGN6512."
+      "incompatible": ["PHYS6500", "ENGN3512", "ENGN6512"],
+      "note": "Alternatively: PHYS1201 and ENGN2228."
     },
     {
       "code": "PHYS3070",
       "title": "Physics of the Earth",
       "terms": "",
+      "units": 6,
       "requiresPermission": false,
       "groups": [
         [
@@ -222,17 +242,20 @@
       "code": "PHYS4110",
       "title": "Honours Research Project",
       "terms": "First Semester/Second Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [],
-      "note": "Requires active enrolment in the PHYS-HSPC Physics Honours specialisation."
+      "unchecked": "Requires active enrolment in the PHYS-HSPC Physics Honours specialisation."
     },
     {
       "code": "PHYS4301",
       "title": "Applied Mathematical Methods in Physics",
       "terms": "First Semester",
+      "units": 6,
       "requiresPermission": false,
       "groups": [],
-      "note": "Requires active enrolment in the PHYS-HSPC Physics Honours specialisation. Incompatible with PHYS8301."
+      "incompatible": ["PHYS8301"],
+      "unchecked": "Requires active enrolment in the PHYS-HSPC Physics Honours specialisation."
     }
   ]
 }

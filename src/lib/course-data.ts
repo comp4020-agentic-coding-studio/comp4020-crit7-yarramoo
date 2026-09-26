@@ -2,25 +2,50 @@
 // src/data/courses/, sourced from ANU Programs & Courses
 // (programsandcourses.anu.edu.au/<year>/course/<CODE>). Course names, terms and
 // requisite text are real; `groups` is our best structured reading of each
-// "Requisite and Incompatibility" section — an AND of ORs, covering only the
-// parts checkable against a list of completed course codes. Anything else the
-// real page requires (unit counts, program restriction, alternative pathways,
-// a permission code) lives in `note` and `requiresPermission`, since a
-// completed-courses list alone can't verify it.
+// "Requisite and Incompatibility" section — an AND of ORs, where each option is
+// either a specific course code or a unit-count clause (see eligibility.ts for
+// the option shapes). `incompatible` is a straight block on courses already
+// passed. Anything the app still can't verify (a program restriction, a
+// convener's permission) lives in `unchecked`/`requiresPermission`; `note` is
+// informational only.
+//
+// The JSON is scraped/hand-converted over time, so this loader accepts both
+// the old shape (every course had `requiresPermission`/`groups`, `groups` was
+// always `string[][]`) and the new one (every field below is optional, and a
+// group's options can also be unit clauses or `{ code, orEnlisted }`) —
+// normalising both into one `CourseSeed` shape.
+import { type Option, type Student, courseLevel, evaluate, isSatisfied } from "./eligibility";
 
 export interface CourseSeed {
   code: string;
   title: string;
   terms: string;
+  units: number;
   requiresPermission: boolean;
-  groups: string[][];
+  groups: Option[][];
+  incompatible: string[];
+  unchecked?: string;
+  note?: string;
+}
+
+// The shape a JSON file may actually contain: every field but `code`/`title`/
+// `terms` is optional, per the fixed data format.
+interface RawCourseSeed {
+  code: string;
+  title: string;
+  terms: string;
+  units?: number;
+  requiresPermission?: boolean;
+  groups?: Option[][];
+  incompatible?: string[];
+  unchecked?: string;
   note?: string;
 }
 
 export interface SubjectSeed {
   code: string;
   description: string;
-  courses: CourseSeed[];
+  courses: RawCourseSeed[];
 }
 
 const files = import.meta.glob<SubjectSeed>("../data/courses/*.json", {
@@ -29,29 +54,36 @@ const files = import.meta.glob<SubjectSeed>("../data/courses/*.json", {
 });
 
 // The JSON is scraped, so fill in the fields a scraper tends to leave out when empty.
-export const subjectSeeds: SubjectSeed[] = Object.values(files)
+export const subjectSeeds: { code: string; description: string; courses: CourseSeed[] }[] = Object.values(files)
   .map((subject) => ({
     ...subject,
-    courses: subject.courses.map((c) => ({
-      ...c,
-      terms: c.terms.replaceAll("/", ", "),
-      requiresPermission: c.requiresPermission ?? false,
-      groups: c.groups ?? [],
-    })),
+    courses: subject.courses.map(
+      (c): CourseSeed => ({
+        ...c,
+        terms: c.terms.replaceAll("/", ", "),
+        units: c.units ?? 6,
+        requiresPermission: c.requiresPermission ?? false,
+        groups: c.groups ?? [],
+        incompatible: c.incompatible ?? [],
+      }),
+    ),
   }))
   .sort((a, b) => a.description.localeCompare(b.description));
 export const courseSeeds: CourseSeed[] = subjectSeeds.flatMap((s) => s.courses);
 
-// A course's level is the thousands digit in its code (COMP2100 -> 2000).
-// Used only to keep the random transcript below plausible for a student at
-// a given year, not to check anything real.
-function courseLevel(code: string): number {
-  const digit = code.match(/\d/)?.[0];
-  return digit ? Number(digit) * 1000 : 0;
+const unitsByCode = new Map(courseSeeds.map((c) => [c.code, c.units]));
+function unitsOf(code: string): number {
+  return unitsByCode.get(code) ?? 6;
 }
+const seedByCode = new Map(courseSeeds.map((c) => [c.code, c]));
 
-function groupsSatisfied(seed: CourseSeed, completed: ReadonlySet<string>): boolean {
-  return seed.groups.every((group) => group.some((code) => completed.has(code)));
+function seedToEligibilityCourse(seed: CourseSeed) {
+  return {
+    code: seed.code,
+    requiresPermission: seed.requiresPermission,
+    groups: seed.groups,
+    incompatible: seed.incompatible,
+  };
 }
 
 // A new user has no transcript. Rather than start everyone from a blank
@@ -82,11 +114,25 @@ export function randomiseTranscript(): { code: string; passed: boolean }[] {
     ),
   );
 
+  // A course is never picked alongside one it's incompatible with, checked
+  // both ways round since the JSON only has to record the block on one side.
+  const conflictsWithChosen = (seed: CourseSeed, completed: ReadonlySet<string>): boolean => {
+    if (seed.incompatible.some((code) => completed.has(code))) return true;
+    for (const code of completed) {
+      if (seedByCode.get(code)?.incompatible.includes(seed.code)) return true;
+    }
+    return false;
+  };
+
   const completedSet = new Set<string>();
   const order: string[] = [];
   while (completedSet.size < target) {
+    const student: Student = { passed: completedSet, enrolled: new Set(), unitsOf };
     const unlocked = pool.filter(
-      (c) => !completedSet.has(c.code) && groupsSatisfied(c, completedSet),
+      (c) =>
+        !completedSet.has(c.code) &&
+        evaluate(seedToEligibilityCourse(c), student).clear &&
+        !conflictsWithChosen(c, completedSet),
     );
     if (unlocked.length === 0) break;
     const majorUnlocked = unlocked.filter((c) => c.code.startsWith(MAJOR));
@@ -101,20 +147,18 @@ export function randomiseTranscript(): { code: string; passed: boolean }[] {
   // history stays internally consistent.
   let failed: string | undefined;
   if (order.length >= 3 && Math.random() < 0.35) {
-    const bySeed = new Map(courseSeeds.map((c) => [c.code, c]));
-    failed = order.find((candidate) =>
-      order
+    failed = order.find((candidate) => {
+      const withoutCandidate = new Set(completedSet);
+      withoutCandidate.delete(candidate);
+      const student: Student = { passed: withoutCandidate, enrolled: new Set(), unitsOf };
+      return order
         .filter((other) => other !== candidate)
         .every((other) => {
-          const seed = bySeed.get(other);
+          const seed = seedByCode.get(other);
           if (!seed) return true;
-          return seed.groups.every(
-            (group) =>
-              !group.includes(candidate) ||
-              group.some((code) => code !== candidate && completedSet.has(code)),
-          );
-        }),
-    );
+          return seed.groups.every((group) => group.some((option) => isSatisfied(option, student)));
+        });
+    });
   }
 
   return order.map((code) => ({ code, passed: code !== failed }));

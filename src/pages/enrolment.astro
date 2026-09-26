@@ -9,12 +9,7 @@
 // eligibility before you try to enrol, not on the last screen.
 import Portal from "../layouts/Portal.astro";
 import { getSessionUser } from "../lib/auth";
-import {
-  getCatalogueForUser,
-  getCompletedMap,
-  listSubjectAreas,
-  type CatalogueEntry,
-} from "../lib/db";
+import { getCatalogueForUser, listSubjectAreas, type CatalogueEntry } from "../lib/db";
 import { PORTAL_NAME } from "../lib/site";
 
 const username = getSessionUser(Astro.cookies);
@@ -27,11 +22,6 @@ const keywordParam = Astro.url.searchParams.get("keyword") ?? "";
 const eligibleOnly = Astro.url.searchParams.get("eligible") === "1";
 
 const catalogue = username ? getCatalogueForUser(username) : [];
-const passed = new Set(
-  username ? [...getCompletedMap(username)].filter(([, ok]) => ok).map(([code]) => code) : [],
-);
-const unmetGroups = (course: CatalogueEntry) =>
-  course.groups.filter((group) => !group.some((code) => passed.has(code)));
 
 // The subject + catalogue-number + keyword filters define the search itself;
 // the "only eligible" checkbox is a display filter on top of it, so the
@@ -84,10 +74,9 @@ function abbreviateTerms(terms: string): string {
 }
 
 function eligibilityText(course: CatalogueEntry): string {
-  const unmet = unmetGroups(course);
   switch (course.status) {
     case "eligible":
-      return "Eligible";
+      return course.unchecked ? "Eligible · check requirement" : "Eligible";
     case "enrolled":
       return "Enrolled";
     case "passed":
@@ -95,8 +84,11 @@ function eligibilityText(course: CatalogueEntry): string {
     case "failed":
       return "Completed — fail";
     case "blocked":
-      if (unmet.length > 0) {
-        return `Needs ${unmet.map((g) => g.join(" or ")).join(", and ")}`;
+      if (course.unmetGroups.length > 0) {
+        return `Needs ${course.unmetGroups.join(", and ")}`;
+      }
+      if (course.incompatibleWith.length > 0) {
+        return `Incompatible with ${course.incompatibleWith.join(", ")}`;
       }
       return course.requiresPermission ? "Permission required" : "Not eligible";
   }
@@ -208,7 +200,10 @@ function eligibilityText(course: CatalogueEntry): string {
                 </thead>
                 <tbody>
                   {tableResults.map((course) => {
-                    const hasDetails = course.requiresPermission || Boolean(course.prereqNote);
+                    // .elig-text ellipsises to keep rows one line, so a long reason also goes in Details.
+                    const longReason = eligibilityText(course).length > 40;
+                    const hasDetails =
+                      longReason || course.requiresPermission || Boolean(course.prereqNote) || Boolean(course.unchecked);
                     const muted = course.status === "blocked" || course.status === "passed" || course.status === "failed";
                     return (
                       <tr role="row" class={`results-row results-row--${course.status}${muted ? " results-row--muted" : ""}`}>
@@ -223,11 +218,13 @@ function eligibilityText(course: CatalogueEntry): string {
                         </td>
                         <td role="cell" class="results-row__elig" data-label="Eligibility">
                           <span class={`status-dot status-dot--${course.status}`} aria-hidden="true" />
-                          <span class="elig-text">{eligibilityText(course)}</span>
+                          <span class="elig-text" title={eligibilityText(course)}>{eligibilityText(course)}</span>
                           {hasDetails && (
                             <details class="elig-details">
                               <summary>Details</summary>
+                              {longReason && <p>{eligibilityText(course)}</p>}
                               {course.requiresPermission && <p>Needs a permission code from the School.</p>}
+                              {course.unchecked && <p>{course.unchecked}</p>}
                               {course.prereqNote && <p>{course.prereqNote}</p>}
                             </details>
                           )}

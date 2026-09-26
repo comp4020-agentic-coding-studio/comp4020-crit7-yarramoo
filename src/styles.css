@@ -892,6 +892,17 @@ th[scope="row"] {
 
 .results-row__elig {
   color: var(--elig-colour, var(--text));
+  /* The eligibility reason is now a full sentence (unit counts, exclusions,
+     "or" alternatives) rather than a single word, which would otherwise wrap
+     onto extra lines and grow the row past its ~37px desktop / two-line
+     mobile height. Flex + min-width: 0 on the text lets it ellipsis-truncate
+     to one line instead, while the dot and the Details toggle keep their
+     own size. The full text is still in the DOM (readable by assistive tech
+     and findable in a page search), just visually clipped. */
+  display: flex;
+  align-items: baseline;
+  gap: 0.35em;
+  min-width: 0;
 }
 
 .results-row--eligible .results-row__elig {
@@ -916,11 +927,18 @@ th[scope="row"] {
 
 .elig-text {
   font-size: 0.88em;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .elig-details {
   display: inline;
   margin-inline-start: 0.4em;
+  flex: none;
+  white-space: nowrap;
 }
 
 .elig-details summary {
