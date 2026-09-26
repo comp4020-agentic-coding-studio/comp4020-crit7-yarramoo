@@ -7,14 +7,22 @@ you've already picked a time slot and read the outline. This prototype inverts
 that: it shows every course sorted by whether *your* transcript already
 clears it, before you try to enrol in anything.
 
-Log in with any username and password — there's no real authentication (see
-below). A brand-new username gets offered a randomly generated but plausible
-transcript, so you can immediately see the eligibility view populated instead
-of staring at an empty one. From there, `/` lists real ANU COMP courses split
-into buckets — eligible now, already enrolled, not eligible (with the specific
-reason: missing prerequisite, needs a permission code, or both), passed, and
-failed — using colour to make the buckets tell apart at a glance without
-requiring anyone to read every line.
+It's dressed as the student portal of **Molonglo University**, which is
+fictional. Log in with any username and password; there's no real
+authentication (see below). A brand-new username is offered a randomly
+generated but plausible transcript, so the portal starts populated instead of
+empty. The homepage is a tile hub, like a real student-administration system,
+covering timetable, degree planning, finances and personal details, but only
+**Enrolment**, **Academic Records** and a testing tool are built. Every other
+tile is visibly marked *under construction* and isn't a link, so there are no
+dead pages to fall into.
+
+**Enrolment** (`/enrolment/`) is the point of the prototype. It lists real ANU
+COMP courses split into eligible now, already enrolled, not eligible (with the
+specific reason: missing prerequisite, needs a permission code, or both),
+passed, and failed. Colour makes the groups easy to tell apart without
+reading every line. **Academic Records** (`/records/`) is the read-only
+transcript that those verdicts are computed from.
 
 ## What good looks like here
 
@@ -28,9 +36,18 @@ revealed after it**. Everything else follows from that:
 - **Colour as a second channel, not the only one.** Each bucket has a heading
   and its own section, so the distinction survives without colour; the flat
   background tints (green/blue/grey/red/amber) are there so the eye doesn't
-  have to read headings to sort five buckets. I chose flat, low-saturation
-  fills deliberately — this is a course tool, not a marketing page, and
-  saturated colour would fight with using colour as a semantic signal at all.
+  have to read headings to sort five buckets. Every status also carries a
+  text label, so nothing depends on colour alone. The brand colours (navy and
+  terracotta) stay out of the status palette, so colour inside the enrolment
+  list always means eligibility and never decoration.
+- **Look like the real thing, but not *be* a real thing.** The layout follows
+  a PeopleSoft-style university portal (crest header, dark toolbar, tile
+  homepage) so the redesign is judged against what students actually use. The
+  university is invented on purpose: a public site styled as a real
+  university's portal, with a login form that echoes passwords back, would
+  work as a credential-phishing page. The crest and tile illustrations were
+  generated for this project (recraft-v3, one shared style prompt) and
+  imitate no real institution's marks.
 - **Real prerequisite data, not toy examples.** The courses, terms, and
   prerequisite structure come from ANU's actual Programs & Courses pages,
   modelled as AND-of-OR groups (a course can need *A and (B or C)*) plus a
@@ -69,9 +86,10 @@ revealed after it**. Everything else follows from that:
 
 `spec/invariants.test.ts` enforces the baseline true of any page here: a
 language tag, one `<h1>`, a nav landmark, alt text, and an axe-core
-accessibility pass. It only sweeps `/`, `/login/` and `/readme/` — `/welcome/`
-and `/god-mode/` require a logged-in session and the invariants fetch cold, so
-they're deliberately left out of that list rather than faked with a session
+accessibility pass. It sweeps `/`, `/enrolment/`, `/records/`, `/login/` and
+`/readme/`, which all render a real logged-out page rather than redirecting.
+`/welcome/` and `/god-mode/` require a logged-in session and the invariants
+fetch cold, so they're deliberately left out rather than faked with a session
 the test harness doesn't have.
 
 What's *not* enforced by any check, and is a judgement call instead:
@@ -85,6 +103,7 @@ What's *not* enforced by any check, and is a judgement call instead:
 - Whether the random transcript generator produces genuinely *plausible*
   student histories, versus merely prerequisite-valid ones — validity is
   mechanical, plausibility isn't.
-- The bland aesthetic itself is a choice, not a constraint imposed by
-  anything technical: a course enrolment tool competing on visual polish
-  would be solving the wrong problem.
+- Whether the portal reads as a credible university system. That's a
+  judgement against the real portals it imitates, not something a test can
+  hold. So is whether the under-construction tiles read as "not built yet"
+  rather than as broken.

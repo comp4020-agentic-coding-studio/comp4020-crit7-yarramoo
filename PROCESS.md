@@ -2,35 +2,34 @@
 
 ## What I built
 
-A course-enrolment prototype that shows eligibility (prerequisites, permission
-codes) up front for every course, instead of only at the final enrolment step.
-`README.md` covers what the app is and what good means here; this covers how
-the agent got there.
+A course-enrolment prototype, dressed as a fictional university's student
+portal, that shows eligibility (prerequisites, permission codes) for every
+course up front instead of at the final step. `README.md` covers what it is;
+this covers how the agent got there.
 
 ## How I got here
 
-I started by having the agent extract real ANU COMP course data (prerequisites,
-terms, permission requirements) from screenshots and the ANU Programs & Courses
-site, converging on a grep-based extraction pattern to avoid burning context on
-full-page reads per course — recorded permanently in `CLAUDE.md`. I answered one
-clarifying question about how to model prerequisites (AND-of-OR groups plus a
-free-text note for non-checkable requirements).
+The agent extracted real ANU course data using a grep-based pattern, now
+recorded in `CLAUDE.md`. Prerequisites are modelled as AND-of-OR groups plus a
+free-text note. I then expanded the brief myself: a no-auth login (three wrong
+passwords reveals yours), prerequisite-consistent random transcripts, and god
+mode. I asked for catalogue and student tables to stay separate
+([`d07bc92`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/d07bc92),
+[`41a6f62`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/41a6f62)).
 
-Mid-build I expanded the brief myself: a login/user system so different
-transcripts could be tested against the eligibility page without redeploying
-data, a joke "3 wrong passwords reveals it" mechanic given there's no real auth,
-a randomised-but-prerequisite-consistent transcript generator for new users, and
-a god-mode page to hand-set a transcript directly. I asked the agent to keep the
-course catalogue and per-student data in separate tables, which shaped the
-schema (
-[`d07bc92`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/d07bc92)).
+To make it look like a real portal, I had the agent plan first and delegate to
+two cheaper Sonnet workers, reviewing each diff itself
+([`cb0ce7c`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/cb0ce7c),
+[`7ba4e31`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/7ba4e31)).
+That review caught blocked courses restating prerequisites the student had
+already met. I had the agent write an image-generation skill against the course proxy for
+the crest and tile art
+([`2102b95`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/2102b95)).
+The university is fictional because a public ANU lookalike that echoes
+passwords would read as phishing.
 
-The agent implemented the feature (
-[`41a6f62`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/commit/41a6f62))
-and smoke-tested every flow itself via `curl` before I reviewed anything —
-login, the password reveal, enrolment, and god-mode all verified end to end.
-
-## Before you ship
+Every flow was smoke-tested with `curl`; the accessibility invariants cover each
+logged-out page.
 
 Full range:
-[`378f1ed...4b62b4d`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/compare/378f1ed...4b62b4d).
+[`378f1ed...2102b95`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-yarramoo/compare/378f1ed...2102b95).
