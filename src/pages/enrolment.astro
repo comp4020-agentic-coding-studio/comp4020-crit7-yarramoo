@@ -1,73 +1,140 @@
 ---
-// Moved from src/pages/index.astro as part of the portal redesign — the hub
-// now lives at "/". Logic and bucket markup are otherwise unchanged; worker B
-// redesigns this page's content next. Must still render a 200 logged-out
-// state (a sign-in prompt), not a redirect, since the accessibility
-// invariants fetch it cold with no cookie.
+// Logged out renders a 200 sign-in prompt, not a redirect, so the
+// accessibility invariants can check it cold.
 import Portal from "../layouts/Portal.astro";
 import { getSessionUser } from "../lib/auth";
-import { getCatalogueForUser } from "../lib/db";
+import { getCatalogueForUser, getCompletedMap, type CatalogueEntry } from "../lib/db";
 import { PORTAL_NAME } from "../lib/site";
 
 const username = getSessionUser(Astro.cookies);
 const catalogue = username ? getCatalogueForUser(username) : [];
+const passed = new Set(
+  username ? [...getCompletedMap(username)].filter(([, ok]) => ok).map(([code]) => code) : [],
+);
+const unmetGroups = (course: CatalogueEntry) =>
+  course.groups.filter((group) => !group.some((code) => passed.has(code)));
 
-const STATUS_LABEL: Record<string, string> = {
+const SECTION_LABEL: Record<CatalogueEntry["status"], string> = {
   eligible: "Eligible now",
-  blocked: "Not eligible",
   enrolled: "Already enrolled",
+  blocked: "Not eligible",
   passed: "Completed — passed",
   failed: "Completed — failed",
 };
 
-// Group by status so the whole "which bucket am I in" question the real
-// enrolment flow only answers at the last step is answered here up front.
-const order = ["eligible", "enrolled", "blocked", "passed", "failed"] as const;
-const buckets = order
-  .map((status) => ({ status, courses: catalogue.filter((c) => c.status === status) }))
-  .filter((bucket) => bucket.courses.length > 0);
+const SUMMARY_LABEL: Record<CatalogueEntry["status"], string> = {
+  eligible: "eligible",
+  enrolled: "enrolled",
+  blocked: "not eligible",
+  passed: "passed",
+  failed: "failed",
+};
+
+// One pill label per row. Unmet prerequisites are what a student can act on, so
+// they win the pill; a permission requirement still shows in the row body.
+function pillLabel(course: CatalogueEntry): string {
+  switch (course.status) {
+    case "eligible":
+      return "Eligible";
+    case "enrolled":
+      return "Enrolled";
+    case "passed":
+      return "Passed";
+    case "failed":
+      return "Failed";
+    case "blocked":
+      return unmetGroups(course).length > 0 ? "Missing prerequisites" : "Needs permission";
+  }
+}
+
+// Order the eligibility question answers up front: eligible and enrolled
+// first, then what's blocking you, then what's already done.
+const order: CatalogueEntry["status"][] = ["eligible", "enrolled", "blocked", "passed", "failed"];
+const sections = order.map((status) => ({
+  status,
+  courses: catalogue.filter((c) => c.status === status),
+}));
 ---
 
 <Portal title={`Enrolment — ${PORTAL_NAME}`} heading="Enrolment" username={username}>
   {
     !username ? (
-      <p>
-        <a href="/login/">Log in</a> to see which courses you're eligible for.
-      </p>
+      <section class="signin-card">
+        <h2>Sign in to see your eligibility</h2>
+        <p>
+          Log in to see which courses you're eligible for, before you try to enrol.
+        </p>
+        <a class="button button-primary" href="/login/">
+          Log in
+        </a>
+      </section>
     ) : (
       <>
-        <p>
-          Courses are sorted by whether your transcript already clears them — no more finding out
-          you needed a prerequisite on the last screen.
+        <p class="programme-banner">
+          Undergraduate · Bachelor of Advanced Computing · Second Semester, 2026
         </p>
-        {buckets.map((bucket) => (
-          <section class={`bucket bucket-${bucket.status}`}>
-            <h2>{STATUS_LABEL[bucket.status]}</h2>
-            <ul>
-              {bucket.courses.map((course) => (
-                <li>
-                  <span class="code">{course.code}</span> {course.title}
-                  <span class="terms">({course.terms})</span>
-                  {course.status === "eligible" && (
-                    <form method="post" action="/api/enrol" class="inline-form">
-                      <input type="hidden" name="code" value={course.code} />
-                      <button>Enrol</button>
-                    </form>
-                  )}
-                  {course.status === "blocked" && (
-                    <p class="why">
-                      {course.requiresPermission && "Needs a permission code from the School. "}
-                      {course.groups.length > 0 &&
-                        `Requires: ${course.groups.map((g) => g.join(" or ")).join(" and ")}. `}
-                      {course.prereqNote}
-                    </p>
-                  )}
-                  {course.status !== "blocked" && course.prereqNote && (
-                    <p class="why">{course.prereqNote}</p>
-                  )}
-                </li>
-              ))}
-            </ul>
+        <p class="lede">
+          Courses below are sorted by whether your record already clears them, so you find out
+          before you try to enrol — not on the last screen of the process.
+        </p>
+
+        <nav class="status-summary" aria-label="Jump to a section">
+          {sections.map((section) =>
+            section.courses.length > 0 ? (
+              <a href={`#${section.status}`} class={`status-count status-count--${section.status}`}>
+                <strong>{section.courses.length}</strong> {SUMMARY_LABEL[section.status]}
+              </a>
+            ) : (
+              <span class={`status-count status-count--${section.status}`}>
+                <strong>{section.courses.length}</strong> {SUMMARY_LABEL[section.status]}
+              </span>
+            ),
+          )}
+        </nav>
+
+        {sections.map((section) => (
+          <section id={section.status} class={`status-card status-card--${section.status}`}>
+            <header class="status-card__header">
+              <h2>{SECTION_LABEL[section.status]}</h2>
+              <span class="status-card__count">{section.courses.length}</span>
+            </header>
+            {section.courses.length === 0 ? (
+              <p class="status-empty">None.</p>
+            ) : (
+              <ul class="status-rows">
+                {section.courses.map((course) => (
+                  <li class="status-row">
+                    <div class="status-row__main">
+                      <p class="status-row__title">
+                        <span class="code">{course.code}</span> {course.title}
+                      </p>
+                      <p class="terms">Offered: {course.terms}</p>
+                      {course.status === "blocked" && (
+                        <p class="status-row__reason">
+                          {course.requiresPermission &&
+                            "Needs a permission code from the School. "}
+                          {unmetGroups(course).length > 0 &&
+                            `Still needs: ${unmetGroups(course).map((g) => g.join(" or ")).join(", and ")}. `}
+                          {course.prereqNote}
+                        </p>
+                      )}
+                      {course.status !== "blocked" && course.prereqNote && (
+                        <p class="status-row__reason">{course.prereqNote}</p>
+                      )}
+                    </div>
+                    <div class="status-row__side">
+                      <span class={`pill pill-${course.status}`}>{pillLabel(course)}</span>
+                      {course.status === "eligible" && (
+                        <form method="post" action="/api/enrol" class="inline-form">
+                          <input type="hidden" name="code" value={course.code} />
+                          <button class="button button-primary" aria-label={`Enrol in ${course.code}`}>Enrol</button>
+                        </form>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         ))}
       </>

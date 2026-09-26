@@ -1,7 +1,13 @@
 ---
+// A testing tool, not a university service: sets a transcript directly so
+// the enrolment page can be exercised against any history without creating
+// a new account each time. Logic and form field names are unchanged
+// (course_<CODE> = none/pass/fail, POST /api/god-mode). Still redirects to
+// /login/ when logged out — that's fine, it isn't in the invariants list.
+import Portal from "../layouts/Portal.astro";
 import { getSessionUser } from "../lib/auth";
 import { getCompletedMap, listCourses } from "../lib/db";
-import "../styles.css";
+import { PORTAL_NAME } from "../lib/site";
 
 const username = getSessionUser(Astro.cookies);
 if (!username) return Astro.redirect("/login/", 302);
@@ -10,84 +16,73 @@ const courses = listCourses();
 const completed = getCompletedMap(username);
 ---
 
-<!doctype html>
-<html lang="en-AU">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>God mode — course enrolment</title>
-  </head>
-  <body>
-    <nav aria-label="site">
-      <a href="/">Enrol</a>
-      <a href="/god-mode/">God mode</a>
-      <a href="/readme/">About</a>
-    </nav>
-    <main>
-      <h1>God mode</h1>
-      <p>
-        Directly set what {username} has passed or failed, so you can test the enrol page against
-        any transcript you like without logging in as a different user each time.
-      </p>
-      <form method="post" action="/api/god-mode">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Course</th>
-              <th scope="col">Not taken</th>
-              <th scope="col">Passed</th>
-              <th scope="col">Failed</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              courses.map((course) => {
-                const state = completed.has(course.code)
-                  ? completed.get(course.code)
-                    ? "pass"
-                    : "fail"
-                  : "none";
-                const groupName = `course_${course.code}`;
-                return (
-                  <tr>
-                    <th scope="row">
-                      {course.code} <span class="terms">{course.title}</span>
-                    </th>
-                    <td>
-                      <input
-                        type="radio"
-                        name={groupName}
-                        value="none"
-                        checked={state === "none"}
-                        aria-label={`${course.code} not taken`}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="radio"
-                        name={groupName}
-                        value="pass"
-                        checked={state === "pass"}
-                        aria-label={`${course.code} passed`}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="radio"
-                        name={groupName}
-                        value="fail"
-                        checked={state === "fail"}
-                        aria-label={`${course.code} failed`}
-                      />
-                    </td>
-                  </tr>
-                );
-              })
-            }
-          </tbody>
-        </table>
-        <button>Save transcript</button>
-      </form>
-    </main>
-  </body>
-</html>
+<Portal title={`God mode — ${PORTAL_NAME}`} heading="God mode" username={username}>
+  <p class="notice notice-info godmode-callout">
+    This is a testing tool, not a university service. It sets {username}'s transcript directly so
+    you can test the enrolment page against any history you like — it bypasses prerequisite
+    checks entirely.
+  </p>
+
+  <form method="post" action="/api/god-mode">
+    <div class="table-scroll">
+      <table class="godmode-table">
+        <caption class="visually-hidden">Set a pass/fail/not-taken result for every course</caption>
+        <thead>
+          <tr>
+            <th scope="col">Course</th>
+            <th scope="col">Not taken</th>
+            <th scope="col">Passed</th>
+            <th scope="col">Failed</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            courses.map((course) => {
+              const state = completed.has(course.code)
+                ? completed.get(course.code)
+                  ? "pass"
+                  : "fail"
+                : "none";
+              const groupName = `course_${course.code}`;
+              return (
+                <tr>
+                  <th scope="row">
+                    <span class="code">{course.code}</span> <span class="terms">{course.title}</span>
+                  </th>
+                  <td>
+                    <input
+                      type="radio"
+                      name={groupName}
+                      value="none"
+                      checked={state === "none"}
+                      aria-label={`${course.code} not taken`}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="radio"
+                      name={groupName}
+                      value="pass"
+                      checked={state === "pass"}
+                      aria-label={`${course.code} passed`}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="radio"
+                      name={groupName}
+                      value="fail"
+                      checked={state === "fail"}
+                      aria-label={`${course.code} failed`}
+                    />
+                  </td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+    <button class="button button-primary">Save transcript</button>
+  </form>
+</Portal>

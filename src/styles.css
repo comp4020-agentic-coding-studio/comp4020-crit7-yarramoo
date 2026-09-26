@@ -25,6 +25,15 @@
   --status-failed-border: #f3b8b3;
   --status-blocked-bg: #fff6e0;
   --status-blocked-border: #e8cf8a;
+
+  /* Text colours for status pills/tints — each checked against its own
+     ...-bg above with the WCAG contrast formula; all clear 4.5:1 by a wide
+     margin (see PROCESS notes from the redesign work for the numbers). */
+  --status-eligible-text: #1a5c1a;
+  --status-enrolled-text: var(--brand-navy);
+  --status-passed-text: #333333;
+  --status-failed-text: #7a1f1f;
+  --status-blocked-text: #6b3d00;
 }
 
 * {
@@ -548,67 +557,13 @@ button.button-primary:hover,
   border-color: #c3cfe6;
 }
 
-/* ---------- Eligibility buckets (shared with /enrolment/) ---------- */
-/* Bland by design: flat colour blocks, no gradients or shadows — just
-   enough colour difference that the buckets read apart at a glance. */
-.bucket {
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 0.75rem 1rem;
-  margin-block: 1rem;
-}
-
-.bucket h2 {
-  font-size: 1rem;
-  margin-block: 0 0.5rem;
-}
-
-.bucket ul {
-  padding-inline-start: 1.2rem;
-  margin: 0;
-}
-
-.bucket li {
-  margin-block: 0.4rem;
-}
-
-.bucket-eligible {
-  background: var(--status-eligible-bg);
-  border-color: var(--status-eligible-border);
-}
-
-.bucket-enrolled {
-  background: var(--status-enrolled-bg);
-  border-color: var(--status-enrolled-border);
-}
-
-.bucket-passed {
-  background: var(--status-passed-bg);
-  border-color: var(--status-passed-border);
-}
-
-.bucket-failed {
-  background: var(--status-failed-bg);
-  border-color: var(--status-failed-border);
-}
-
-.bucket-blocked {
-  background: var(--status-blocked-bg);
-  border-color: var(--status-blocked-border);
-}
-
 .code {
   font-weight: 600;
 }
 
-.terms,
-.why {
+.terms {
   color: var(--muted);
   font-size: 0.9em;
-}
-
-.why {
-  margin: 0.2rem 0 0;
 }
 
 /* ---------- Tables (god-mode) ---------- */
@@ -628,6 +583,282 @@ td {
 
 th[scope="row"] {
   text-align: left;
+}
+
+/* ---------- Status pills (shared: enrolment, records) ---------- */
+/* Text colour always carries the status, never colour alone — each pill's
+   background/text pair is checked against the WCAG contrast formula in
+   :root's comment above. */
+
+.pill {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pill-eligible {
+  background: var(--status-eligible-bg);
+  color: var(--status-eligible-text);
+}
+
+.pill-enrolled {
+  background: var(--status-enrolled-bg);
+  color: var(--status-enrolled-text);
+}
+
+.pill-passed {
+  background: var(--status-passed-bg);
+  color: var(--status-passed-text);
+}
+
+.pill-failed {
+  background: var(--status-failed-bg);
+  color: var(--status-failed-text);
+}
+
+.pill-blocked {
+  background: var(--status-blocked-bg);
+  color: var(--status-blocked-text);
+}
+
+/* ---------- Enrolment ---------- */
+
+.programme-banner {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 3px;
+  background: var(--brand-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.lede {
+  max-width: 60ch;
+  color: var(--muted);
+}
+
+.status-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-block: 1rem 1.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.status-count {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.status-count[href] {
+  text-decoration: underline;
+}
+
+.status-count--eligible {
+  color: var(--status-eligible-text);
+}
+
+.status-count--enrolled {
+  color: var(--status-enrolled-text);
+}
+
+.status-count--blocked {
+  color: var(--status-blocked-text);
+}
+
+.status-count--passed {
+  color: var(--status-passed-text);
+}
+
+.status-count--failed {
+  color: var(--status-failed-text);
+}
+
+.status-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left-width: 6px;
+  border-radius: 4px;
+  margin-block: 1.25rem;
+  overflow: hidden;
+}
+
+.status-card--eligible {
+  border-left-color: var(--status-eligible-border);
+}
+
+.status-card--enrolled {
+  border-left-color: var(--status-enrolled-border);
+}
+
+.status-card--blocked {
+  border-left-color: var(--status-blocked-border);
+}
+
+.status-card--passed {
+  border-left-color: var(--status-passed-border);
+}
+
+.status-card--failed {
+  border-left-color: var(--status-failed-border);
+}
+
+.status-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  background: var(--title-strip-bg);
+}
+
+.status-card--eligible .status-card__header {
+  background: var(--status-eligible-bg);
+}
+
+.status-card--enrolled .status-card__header {
+  background: var(--status-enrolled-bg);
+}
+
+.status-card--blocked .status-card__header {
+  background: var(--status-blocked-bg);
+}
+
+.status-card--passed .status-card__header {
+  background: var(--status-passed-bg);
+}
+
+.status-card--failed .status-card__header {
+  background: var(--status-failed-bg);
+}
+
+.status-card__header h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--brand-navy);
+}
+
+.status-card__count {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--card-bg);
+  border-radius: 999px;
+  padding: 0.05rem 0.55rem;
+}
+
+.status-empty {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.status-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.status-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-block-start: 1px solid var(--border);
+}
+
+.status-row:first-child {
+  border-block-start: none;
+}
+
+.status-row__main {
+  min-width: 0;
+}
+
+.status-row__title {
+  margin: 0;
+}
+
+.status-row__reason {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.9em;
+}
+
+.status-row__side {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.status-row__side form {
+  margin: 0;
+}
+
+/* ---------- Academic Records ---------- */
+
+.records-note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.records-table {
+  background: var(--card-bg);
+}
+
+.records-table th,
+.records-table td {
+  text-align: left;
+}
+
+.records-table th[scope="col"] {
+  background: var(--title-strip-bg);
+  color: var(--brand-navy);
+}
+
+.records-table tbody tr:nth-child(even) {
+  background: var(--page-bg);
+}
+
+/* ---------- God mode ---------- */
+
+.godmode-callout {
+  max-width: 60ch;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.godmode-table {
+  min-width: 32rem;
+}
+
+.godmode-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--title-strip-bg);
+  color: var(--brand-navy);
+}
+
+.godmode-table tbody tr:nth-child(even) {
+  background: var(--page-bg);
+}
+
+.godmode-table th[scope="row"] {
+  white-space: nowrap;
 }
 
 /* ---------- README content ---------- */
@@ -653,5 +884,20 @@ th[scope="row"] {
 
   .portal-status {
     text-align: center;
+  }
+
+  .status-row {
+    flex-direction: column;
+  }
+
+  .status-row__side {
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .status-summary {
+    flex-direction: column;
+    gap: 0.4rem;
   }
 }

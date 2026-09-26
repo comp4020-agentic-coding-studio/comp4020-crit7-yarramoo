@@ -1,0 +1,78 @@
+---
+// Read-only transcript. Logged out renders a 200 sign-in prompt, not a
+// redirect, so the accessibility invariants can check it cold.
+import Portal from "../layouts/Portal.astro";
+import { getSessionUser } from "../lib/auth";
+import { getCompletedMap, listCourses } from "../lib/db";
+import { PORTAL_NAME } from "../lib/site";
+
+const username = getSessionUser(Astro.cookies);
+
+const courseTitles = new Map(listCourses().map((c) => [c.code, c.title]));
+const completed = username ? getCompletedMap(username) : new Map<string, boolean>();
+
+const rows = [...completed.entries()]
+  .map(([code, passed]) => ({ code, title: courseTitles.get(code) ?? code, passed }))
+  .sort((a, b) => a.code.localeCompare(b.code));
+
+const passedCount = rows.filter((r) => r.passed).length;
+const failedCount = rows.length - passedCount;
+---
+
+<Portal title={`Academic Records — ${PORTAL_NAME}`} heading="Academic Records" username={username}>
+  {
+    !username ? (
+      <section class="signin-card">
+        <h2>Sign in to see your transcript</h2>
+        <p>Log in to see the courses on your academic record.</p>
+        <a class="button button-primary" href="/login/">
+          Log in
+        </a>
+      </section>
+    ) : (
+      <>
+        <p class="lede">
+          {rows.length} course{rows.length === 1 ? "" : "s"} completed · {passedCount} passed ·{" "}
+          {failedCount} failed
+        </p>
+        <p class="records-note">
+          This prototype records only a pass/fail outcome for each course — it doesn't track
+          grades or marks.
+        </p>
+
+        {rows.length === 0 ? (
+          <p class="status-empty">
+            No completed courses on record yet. Use <a href="/god-mode/">God mode</a> to set some
+            up.
+          </p>
+        ) : (
+          <table class="records-table">
+            <caption class="visually-hidden">Completed courses and their pass/fail result</caption>
+            <thead>
+              <tr>
+                <th scope="col">Course</th>
+                <th scope="col">Title</th>
+                <th scope="col">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr>
+                  <th scope="row" class="code">
+                    {row.code}
+                  </th>
+                  <td>{row.title}</td>
+                  <td>
+                    <span class={`pill pill-${row.passed ? "passed" : "failed"}`}>
+                      {row.passed ? "Pass" : "Fail"}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </>
+    )
+  }
+</Portal>
