@@ -12,6 +12,10 @@ Desktop.ini
 # the local dev database — state on your machine, never in the repo
 .data/
 
+# source screenshots used to extract course data into course-data.ts —
+# already baked into the code, no need to ship the images
+enrolment_flow/
+
 # keep secrets out of the repo: your API key lives in an env var or an
 # untracked file, never in a tracked one
 .env
