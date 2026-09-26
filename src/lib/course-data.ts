@@ -1,13 +1,12 @@
-// Seed data for the course catalogue. Sourced from ANU Programs & Courses
-// (programsandcourses.anu.edu.au/course/<CODE>), fetched 2026-09-26. Course
-// names, terms and requisite text are real; `groups` is our best structured
-// reading of each "Requisite and Incompatibility" section — an AND of ORs,
-// covering only the parts checkable against a list of completed course
-// codes. Anything else the real page requires (unit counts, program
-// restriction, supervisor sign-off, a permission code) lives in `note` and
-// `requiresPermission` instead, since a completed-courses list alone can't
-// verify it. COMP4801 (Honours Result) is a result placeholder, not an
-// enrollable class, so it's excluded.
+// Seed data for the course catalogue: one JSON file per subject area in
+// src/data/courses/, sourced from ANU Programs & Courses
+// (programsandcourses.anu.edu.au/<year>/course/<CODE>). Course names, terms and
+// requisite text are real; `groups` is our best structured reading of each
+// "Requisite and Incompatibility" section — an AND of ORs, covering only the
+// parts checkable against a list of completed course codes. Anything else the
+// real page requires (unit counts, program restriction, alternative pathways,
+// a permission code) lives in `note` and `requiresPermission`, since a
+// completed-courses list alone can't verify it.
 
 export interface CourseSeed {
   code: string;
@@ -18,227 +17,30 @@ export interface CourseSeed {
   note?: string;
 }
 
-export const courseSeeds: CourseSeed[] = [
-  {
-    code: "COMP1100",
-    title: "Programming as Problem Solving",
-    terms: "First Semester, Second Semester",
-    requiresPermission: false,
-    groups: [],
-  },
-  {
-    code: "COMP1110",
-    title: "Structured Programming",
-    terms: "First Semester, Second Semester",
-    requiresPermission: false,
-    groups: [["COMP1100", "COMP1130", "COMP1730"]],
-  },
-  {
-    code: "COMP1140",
-    title: "Structured Programming (Advanced)",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [["COMP1130"]],
-  },
-  {
-    code: "COMP1600",
-    title: "Foundations of Computing",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [["COMP1100", "COMP1130"]],
-    note: "Also requires 6 units of MATH courses.",
-  },
-  {
-    code: "COMP1730",
-    title: "Programming for Scientists",
-    terms: "First Semester, Second Semester",
-    requiresPermission: false,
-    groups: [],
-  },
-  {
-    code: "COMP2100",
-    title: "Software Construction",
-    terms: "First Semester, Second Semester",
-    requiresPermission: false,
-    groups: [["COMP1110", "COMP1140"]],
-    note: "Also requires 6 units of 1000-level MATH (BSc/Adv Science students also need COMP1600).",
-  },
-  {
-    code: "COMP2120",
-    title: "Software Engineering",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [["COMP2100"]],
-    note: "Currently studying COMP2100 also counts.",
-  },
-  {
-    code: "COMP2310",
-    title: "Systems, Networks, and Concurrency",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [
-      ["COMP1110", "COMP1140"],
-      ["COMP2300", "ENGN2219"],
-    ],
-  },
-  {
-    code: "COMP2400",
-    title: "Relational Databases",
-    terms: "First Semester, Second Semester",
-    requiresPermission: false,
-    groups: [["COMP1100", "COMP1130", "INFS1001", "COMP1730"]],
-  },
-  {
-    code: "COMP3300",
-    title: "Operating Systems Implementation",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [["COMP2310"]],
-  },
-  {
-    code: "COMP3320",
-    title: "High Performance Scientific Computation",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [
-      ["COMP2100", "COMP2300", "ENGN2219"],
-      ["COMP1600"],
-    ],
-    note: "Or 6 units of MATH courses (excluding MATH1003) in place of COMP1600.",
-  },
-  {
-    code: "COMP3430",
-    title: "Data Wrangling",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [["COMP1100", "COMP1130", "COMP1730"], ["COMP1110", "COMP1140"], ["COMP2400"]],
-  },
-  {
-    code: "COMP3500",
-    title: "Computing Team Project",
-    terms: "First Semester, Second Semester",
-    requiresPermission: true,
-    groups: [["COMP2100"], ["COMP2120"]],
-    note: "Must be studying Software Engineering (Honours) or Bachelor of Computing, and secure project-group membership approved by the convener before the end of week 1.",
-  },
-  {
-    code: "COMP3600",
-    title: "Algorithms",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [],
-    note: "Requires 24 units of COMP-coded courses, plus 6 units of MATH or COMP1600.",
-  },
-  {
-    code: "COMP3670",
-    title: "Introduction to Machine Learning",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [["COMP1110", "COMP1140"]],
-  },
-  {
-    code: "COMP3704",
-    title: "Network Security",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [["COMP2700"], ["COMP3310", "ENGN3539"]],
-  },
-  {
-    code: "COMP3770",
-    title: "Computing Research Project (R&D)",
-    terms: "First Semester, Second Semester",
-    requiresPermission: true,
-    groups: [["COMP2550"]],
-    note: "Must be studying Bachelor of Advanced Computing (R&D), have found a project/supervisor, and completed the Student Project Registration Form.",
-  },
-  {
-    code: "COMP4820",
-    title: "Advanced Computing Internship",
-    terms: "First Semester, Second Semester",
-    requiresPermission: true,
-    groups: [["COMP2100"]],
-    note: "Must be studying Bachelor of Advanced Computing, completed 12 units of 3000-level COMP courses, and be accepted via competitive application/interview.",
-  },
-  {
-    code: "COMP3900",
-    title: "Human-Computer Interaction",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [],
-    note: "Requires 12 units of 2000-level COMP courses.",
-  },
-  {
-    code: "COMP4620",
-    title: "Advanced Topics in Artificial Intelligence",
-    terms: "Second Semester",
-    requiresPermission: true,
-    groups: [],
-    note: "Requires 12 units of 3000/4000-level COMP courses; topic-specific prerequisites are published separately.",
-  },
-  {
-    code: "COMP4650",
-    title: "Document Analysis",
-    terms: "Second Semester",
-    requiresPermission: false,
-    groups: [["COMP1600", "COMP2100"]],
-    note: "Also requires 12 units of 3000/4000-level COMP or INFS courses.",
-  },
-  {
-    code: "COMP4691",
-    title: "Optimisation",
-    terms: "Not currently offered",
-    requiresPermission: false,
-    groups: [["COMP3620"], ["MATH1013", "MATH1115"]],
-  },
-  {
-    code: "COMP4500",
-    title: "Software Engineering Team Project",
-    terms: "First Semester, Second Semester",
-    requiresPermission: true,
-    groups: [["COMP2120", "COMP3500"]],
-    note: "Bachelor of Advanced Computing students also need 12 units of 3000/4000-level courses; Software Engineering (Honours) students need COMP3500 specifically. Also requires project-group membership approved by the convener.",
-  },
-  {
-    code: "COMP4550",
-    title: "Computing Research Project",
-    terms: "First Semester, Second Semester",
-    requiresPermission: true,
-    groups: [["COMP2550", "COMP4450"]],
-    note: "Requires a weighted average of 70% across your best 36 units (excluding 1000-level), a confirmed project/supervisor, and the Student Project Registration Form.",
-  },
-  {
-    code: "COMP5920",
-    title: "Exchange Program in Computer Science",
-    terms: "First Semester, Second Semester",
-    requiresPermission: true,
-    groups: [],
-    note: "Contact the School of Computing for a permission code.",
-  },
-  {
-    code: "COMP4011",
-    title: "Advanced Topics in Formal Methods and Programming Languages",
-    terms: "Second Semester",
-    requiresPermission: true,
-    groups: [],
-    note: "Requires 12 units of 3000/4000-level COMP courses; topic-specific prerequisites are published separately.",
-  },
-  {
-    code: "COMP4045",
-    title: "Advanced Topics in Computer Systems",
-    terms: "First Semester",
-    requiresPermission: true,
-    groups: [],
-    note: "Requires 12 units of 3000/4000-level COMP courses; topic-specific prerequisites are published separately.",
-  },
-  {
-    code: "COMP3740",
-    title: "Individual Project",
-    terms: "First Semester, Second Semester",
-    requiresPermission: true,
-    groups: [],
-    note: "Requires 72 units completed towards your degree (CoSM students must be in a CSCI-MAJ). Permission code via the Student Project Registration Form.",
-  },
-];
+export interface SubjectSeed {
+  code: string;
+  description: string;
+  courses: CourseSeed[];
+}
+
+const files = import.meta.glob<SubjectSeed>("../data/courses/*.json", {
+  eager: true,
+  import: "default",
+});
+
+// The JSON is scraped, so fill in the fields a scraper tends to leave out when empty.
+export const subjectSeeds: SubjectSeed[] = Object.values(files)
+  .map((subject) => ({
+    ...subject,
+    courses: subject.courses.map((c) => ({
+      ...c,
+      terms: c.terms.replaceAll("/", ", "),
+      requiresPermission: c.requiresPermission ?? false,
+      groups: c.groups ?? [],
+    })),
+  }))
+  .sort((a, b) => a.description.localeCompare(b.description));
+export const courseSeeds: CourseSeed[] = subjectSeeds.flatMap((s) => s.courses);
 
 // A course's level is the thousands digit in its code (COMP2100 -> 2000).
 // Used only to keep the random transcript below plausible for a student at
@@ -260,13 +62,24 @@ function groupsSatisfied(seed: CourseSeed, completed: ReadonlySet<string>): bool
 // immediately have something interesting to say about it. Permission-gated
 // courses are never auto-granted — those are exactly the ones a code check
 // can't verify, so a fabricated history shouldn't sidestep that.
+const MAJOR = "COMP";
+
 export function randomiseTranscript(): { code: string; passed: boolean }[] {
   const year = 1 + Math.floor(Math.random() * 3);
   const levelCap = year * 1000;
   const target = { 1: rand(3, 5), 2: rand(7, 10), 3: rand(12, 16) }[year] ?? 5;
 
+  // The portal's programme is Advanced Computing: COMP is the major, and one
+  // other discipline supplies electives, as a real flexible degree would.
+  const minors = subjectSeeds.filter((s) => s.code !== MAJOR);
+  const minor = minors[Math.floor(Math.random() * minors.length)]?.code;
   const pool = shuffle(
-    courseSeeds.filter((c) => !c.requiresPermission && courseLevel(c.code) <= levelCap),
+    courseSeeds.filter(
+      (c) =>
+        !c.requiresPermission &&
+        courseLevel(c.code) <= levelCap &&
+        (c.code.startsWith(MAJOR) || (minor !== undefined && c.code.startsWith(minor))),
+    ),
   );
 
   const completedSet = new Set<string>();
@@ -276,7 +89,9 @@ export function randomiseTranscript(): { code: string; passed: boolean }[] {
       (c) => !completedSet.has(c.code) && groupsSatisfied(c, completedSet),
     );
     if (unlocked.length === 0) break;
-    const next = unlocked[Math.floor(Math.random() * unlocked.length)];
+    const majorUnlocked = unlocked.filter((c) => c.code.startsWith(MAJOR));
+    const from = majorUnlocked.length > 0 && Math.random() < 0.7 ? majorUnlocked : unlocked;
+    const next = from[Math.floor(Math.random() * from.length)];
     completedSet.add(next.code);
     order.push(next.code);
   }

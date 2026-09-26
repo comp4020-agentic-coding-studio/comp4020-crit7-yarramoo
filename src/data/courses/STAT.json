@@ -1,0 +1,228 @@
+{
+  "code": "STAT",
+  "description": "Statistics",
+  "courses": [
+    {
+      "code": "STAT1003",
+      "title": "Statistical Techniques",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Incompatible with STAT1008."
+    },
+    {
+      "code": "STAT1008",
+      "title": "Quantitative Research Methods",
+      "terms": "First Semester/Second Semester/Spring Session",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Incompatible with STAT1003."
+    },
+    {
+      "code": "STAT2001",
+      "title": "Introductory Mathematical Statistics",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT1003",
+          "STAT1008"
+        ],
+        [
+          "MATH1113",
+          "MATH1115",
+          "MATH1014"
+        ]
+      ],
+      "note": "Alternatively, enrolment in the Bachelor of Applied Data Analytics satisfies the first requirement; MATH1014 may be completed or taken concurrently. Incompatible with STAT2013 and STAT6013."
+    },
+    {
+      "code": "STAT2005",
+      "title": "Introduction to Stochastic Processes",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT2001",
+          "STAT2013"
+        ],
+        [
+          "MATH1113",
+          "MATH1014",
+          "MATH1116"
+        ]
+      ],
+      "note": "MATH1116 may be completed or taken concurrently. Incompatible with STAT7004."
+    },
+    {
+      "code": "STAT2008",
+      "title": "Regression Modelling",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT1003",
+          "STAT1008"
+        ]
+      ],
+      "note": "Alternatively: enrolled in the Bachelor of Applied Data Analytics with STAT2001. Incompatible with STAT2014 and STAT6014."
+    },
+    {
+      "code": "STAT2013",
+      "title": "Introductory Mathematical Statistics for Actuarial Studies",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH1113",
+          "MATH1116",
+          "MATH1014"
+        ],
+        [
+          "STAT1003",
+          "STAT1008"
+        ]
+      ],
+      "note": "Incompatible with STAT2001 and STAT6013."
+    },
+    {
+      "code": "STAT2014",
+      "title": "Regression Modelling for Actuarial Studies",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT1008"
+        ],
+        [
+          "STAT2013"
+        ]
+      ],
+      "note": "STAT2013 may be completed or taken concurrently. Incompatible with STAT2008 and STAT6014."
+    },
+    {
+      "code": "STAT2032",
+      "title": "Financial Mathematics",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT1003",
+          "STAT1008"
+        ]
+      ]
+    },
+    {
+      "code": "STAT3004",
+      "title": "Stochastic Processes",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT2005"
+        ]
+      ],
+      "note": "Incompatible with STAT4018 and STAT6018."
+    },
+    {
+      "code": "STAT3006",
+      "title": "Advanced Stochastic Processes",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT3004"
+        ]
+      ],
+      "note": "Incompatible with STAT6060."
+    },
+    {
+      "code": "STAT3011",
+      "title": "Graphical Data Analysis",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT1003",
+          "STAT1008",
+          "STAT2001"
+        ]
+      ],
+      "note": "Incompatible with STAT4026 and STAT6026."
+    },
+    {
+      "code": "STAT3012",
+      "title": "Design of Experiments and Surveys",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT2008",
+          "STAT2014"
+        ],
+        [
+          "STAT2001",
+          "STAT2013"
+        ]
+      ],
+      "note": "STAT2001 or STAT2013 may be completed or taken concurrently. Incompatible with STAT4029 and STAT6029."
+    },
+    {
+      "code": "STAT3013",
+      "title": "Statistical Inference",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT2001",
+          "STAT2013"
+        ],
+        [
+          "MATH1113",
+          "MATH1014",
+          "MATH1116"
+        ]
+      ],
+      "note": "Incompatible with STAT4027 and STAT6027."
+    },
+    {
+      "code": "STAT3015",
+      "title": "Generalised Linear Models",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT2008",
+          "STAT2014"
+        ]
+      ],
+      "note": "Incompatible with STAT4030 and STAT6030."
+    },
+    {
+      "code": "STAT4018",
+      "title": "Stochastic Processes",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT2005"
+        ]
+      ],
+      "note": "Incompatible with STAT3004 and STAT6018."
+    },
+    {
+      "code": "STAT4026",
+      "title": "Graphical Data Analysis",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT1003",
+          "STAT1008",
+          "STAT2001"
+        ]
+      ],
+      "note": "Incompatible with STAT3011 and STAT6026."
+    }
+  ]
+}

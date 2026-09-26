@@ -1,16 +1,18 @@
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import Database from "better-sqlite3";
-import { eq } from "drizzle-orm";
+import { and, eq, like } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
-import { courseSeeds } from "./course-data";
+import { subjectSeeds } from "./course-data";
 import {
   completedCourses,
   type Course,
   courses,
   enrolments,
   prerequisiteGroups,
+  type SubjectArea,
+  subjectAreas,
   type User,
   users,
 } from "./schema";
@@ -33,37 +35,49 @@ export const db = drizzle(client);
 // commit the migration it writes to drizzle/.
 migrate(db, { migrationsFolder: "./drizzle" });
 
-// Seed the (shared) course catalogue from the real ANU data in
-// course-data.ts. Runs at every boot; onConflictDoNothing makes it a no-op
-// once the rows already exist, so it's safe alongside a migration on an
-// existing volume. Student data (users, their transcripts) is never seeded
-// here — it only exists once someone logs in.
+// Seed the shared course catalogue from src/data/courses/*.json at every boot,
+// as an upsert that also rewrites each course's prerequisite groups, so a
+// deploy with corrected course data takes effect on an existing volume.
+// Student data (users, their transcripts) is never seeded; it only exists
+// once someone logs in.
 function seed() {
-  for (const c of courseSeeds) {
-    db.insert(courses)
-      .values({
-        code: c.code,
-        title: c.title,
-        terms: c.terms,
-        requiresPermission: c.requiresPermission,
-        prereqNote: c.note,
-      })
-      .onConflictDoNothing()
-      .run();
-    c.groups.forEach((group, groupIndex) => {
-      for (const requiredCode of group) {
-        db.insert(prerequisiteGroups)
-          .values({ courseCode: c.code, group: groupIndex, requiredCode })
-          .onConflictDoNothing()
+  db.transaction((tx) => {
+    for (const subject of subjectSeeds) {
+      tx.insert(subjectAreas)
+        .values({ code: subject.code, description: subject.description })
+        .onConflictDoUpdate({ target: subjectAreas.code, set: { description: subject.description } })
+        .run();
+      for (const c of subject.courses) {
+        const row = {
+          title: c.title,
+          terms: c.terms,
+          requiresPermission: c.requiresPermission,
+          prereqNote: c.note ?? null,
+        };
+        tx.insert(courses)
+          .values({ code: c.code, ...row })
+          .onConflictDoUpdate({ target: courses.code, set: row })
           .run();
+        tx.delete(prerequisiteGroups).where(eq(prerequisiteGroups.courseCode, c.code)).run();
+        c.groups.forEach((group, groupIndex) => {
+          for (const requiredCode of new Set(group)) {
+            tx.insert(prerequisiteGroups)
+              .values({ courseCode: c.code, group: groupIndex, requiredCode })
+              .run();
+          }
+        });
       }
-    });
-  }
+    }
+  });
 }
 
 seed();
 
-export type { Course, User };
+export type { Course, SubjectArea, User };
+
+export function listSubjectAreas(): SubjectArea[] {
+  return db.select().from(subjectAreas).orderBy(subjectAreas.description).all();
+}
 
 export function listCourses(): Course[] {
   return db.select().from(courses).orderBy(courses.code).all();
@@ -105,6 +119,36 @@ export function setCompletedCourses(
   db.transaction((tx) => {
     tx.delete(completedCourses).where(eq(completedCourses.username, username)).run();
     for (const entry of entries) {
+      tx.insert(completedCourses)
+        .values({ username, code: entry.code, passed: entry.passed })
+        .run();
+    }
+  });
+}
+
+// Replaces only one subject area's slice of a user's transcript, leaving every
+// other subject's completed courses untouched — used by the god-mode editor
+// once it shows one subject at a time, so saving PSYC doesn't wipe COMP.
+// `entries` is expected to already be scoped to `subjectCode` (the editor only
+// renders radios for that subject's courses); as a defensive measure, any
+// entry outside the subject is ignored rather than trusted blindly.
+export function setCompletedCoursesForSubject(
+  username: string,
+  subjectCode: string,
+  entries: { code: string; passed: boolean }[],
+): void {
+  const subjectCodes = new Set(
+    listCourses()
+      .filter((c) => c.code.startsWith(subjectCode))
+      .map((c) => c.code),
+  );
+  const scopedEntries = entries.filter((e) => subjectCodes.has(e.code));
+
+  db.transaction((tx) => {
+    tx.delete(completedCourses)
+      .where(and(eq(completedCourses.username, username), like(completedCourses.code, `${subjectCode}%`)))
+      .run();
+    for (const entry of scopedEntries) {
       tx.insert(completedCourses)
         .values({ username, code: entry.code, passed: entry.passed })
         .run();

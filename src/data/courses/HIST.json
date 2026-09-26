@@ -1,0 +1,115 @@
+{
+  "code": "HIST",
+  "description": "History",
+  "courses": [
+    {
+      "code": "HIST1209",
+      "title": "Terror to Terrorism: A History",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "HIST1214",
+      "title": "Empires in Global History",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "HIST2022",
+      "title": "Aboriginal and Torres Strait Islander History",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of ANU courses, or convenor permission. Incompatible with HIST6022."
+    },
+    {
+      "code": "HIST2070",
+      "title": "Emperors, Pilgrims and Crusaders: The World of Byzantium",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 12 units of HIST courses (which may include ECHI1006 or EURO1004) or CLAS courses, or 24 units of ANU courses, or convenor permission."
+    },
+    {
+      "code": "HIST2110",
+      "title": "Approaches to History",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 12 units of HIST courses (which may include EURO1004 or ECHI1006), Ancient History (ANCH/CLAS) courses, or 24 units of ANU courses, or convenor permission. Incompatible with HIST3110 and HIST6110."
+    },
+    {
+      "code": "HIST2136",
+      "title": "World at War, 1939-1945",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of ANU courses, or convenor permission. Incompatible with HSIT6136."
+    },
+    {
+      "code": "HIST2141",
+      "title": "The Cold War: 1945-1989",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of ANU courses, or convenor permission."
+    },
+    {
+      "code": "HIST2196",
+      "title": "From the Romans to the Anglo-Saxons: Early Medieval Europe c. 400-1000 CE",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "HIST3007",
+      "title": "Making History",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of HIST courses (which may include EURO1004 or ECHI1006), or convener permission. Incompatible with HIST2139 and HIST6007."
+    },
+    {
+      "code": "HIST3012",
+      "title": "Topics in History",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of HIST courses (which may include EURO1004 or ECHI1006), or 72 units of ANU courses, or convenor permission. The same topic may not be completed more than once."
+    },
+    {
+      "code": "HIST3110",
+      "title": "Approaches to History",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of HIST courses (which may include EURO1004 or ECHI1006), or 72 units of ANU courses, or convenor permission. Incompatible with HIST2110 and HIST6110."
+    },
+    {
+      "code": "HIST3142",
+      "title": "Indigenous History, Memory and Politics",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of HIST and/or INDG courses (which may include ECHI1006 or EURO1004), or 72 units of ANU courses, or convenor permission. Incompatible with HIST2142."
+    },
+    {
+      "code": "HIST4011",
+      "title": "Seminar in Advanced Historiography",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires enrolment in HARTS/HART2, HEURO, or HASIA, or 144 units towards APHAR/APNAR. Incompatible with HIST8024; may be completed twice with different content."
+    },
+    {
+      "code": "HIST4013",
+      "title": "Key Issues in History",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires enrolment in HARTS/HART2 or HEURO, or 144 units towards APHAR/APNAR."
+    }
+  ]
+}

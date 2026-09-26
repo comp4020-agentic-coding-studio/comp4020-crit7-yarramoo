@@ -1,0 +1,199 @@
+{
+  "code": "BIOL",
+  "description": "Biology",
+  "courses": [
+    {
+      "code": "BIOL1008",
+      "title": "Human Biology",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "BIOL1009",
+      "title": "Diversity of Life",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "BIOL1020",
+      "title": "Foundations of life",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Incompatible with BIOL6020."
+    },
+    {
+      "code": "BIOL1030",
+      "title": "Diversity of Life",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "BIOL2001",
+      "title": "Introduction to Quantitative Biology",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "BIOL1020",
+          "BIOL1030"
+        ]
+      ],
+      "note": "Students who commenced prior to 2026 may alternatively use BIOL1003 or BIOL1004. Incompatible with BIOL2202 and BIOL6200."
+    },
+    {
+      "code": "BIOL2114",
+      "title": "Evolution",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "BIOL1003",
+          "ENVS1003"
+        ]
+      ]
+    },
+    {
+      "code": "BIOL2115",
+      "title": "Comparative Physiology",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "BIOL1003"
+        ],
+        [
+          "BIOL1004"
+        ]
+      ],
+      "note": "Incompatible with BIOL6115."
+    },
+    {
+      "code": "BIOL2117",
+      "title": "Cell Biology",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "BIOL2161"
+        ]
+      ],
+      "note": "Incompatible with BIOL6117."
+    },
+    {
+      "code": "BIOL2131",
+      "title": "Ecology",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "BIOL1003",
+          "ENVS1003"
+        ]
+      ],
+      "note": "Alternatively: with permission of the convener. Incompatible with BIOL6004."
+    },
+    {
+      "code": "BIOL2142",
+      "title": "General Microbiology",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "BIOL2161"
+        ],
+        [
+          "CHEM1201"
+        ]
+      ],
+      "note": "Incompatible with BIOL6142."
+    },
+    {
+      "code": "BIOL3002",
+      "title": "Plants: Genes and the Environment",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "BIOL2115",
+          "BIOL2151",
+          "BIOL2161"
+        ]
+      ],
+      "note": "Incompatible with BIOL6002 and BIOL2121."
+    },
+    {
+      "code": "BIOL3023",
+      "title": "Special Topics in Biology",
+      "terms": "Summer Session/First Semester/Autumn Session/Winter Session/Second Semester/Spring Session",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires a minimum of 72 units of BIOL-coded courses, or convener permission, or prerequisites specified in the class summary; submit a permission code request to the Biology Teaching and Learning Centre."
+    },
+    {
+      "code": "BIOL3106",
+      "title": "Biosecurity",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Incompatible with BIOL6106. Basic molecular laboratory skills (e.g. from BIOL1004, BIOL2171, BIOL2161, BIOL2142, or BIOL2162) are recommended; contact the convenor if you lack this background."
+    },
+    {
+      "code": "BIOL3107",
+      "title": "Advances in Medical and Plant Biochemistry",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "BIOL2171"
+        ],
+        [
+          "CHEM1201"
+        ]
+      ],
+      "note": "Incompatible with BIOL6107."
+    },
+    {
+      "code": "BIOL3108",
+      "title": "Hallmarks of Cancer",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "BIOL2161"
+        ],
+        [
+          "BIOL2174",
+          "BIOL2117",
+          "BIOL2171"
+        ]
+      ],
+      "note": "Incompatible with BIOL6108."
+    },
+    {
+      "code": "BIOL3109",
+      "title": "Developmental Biology",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "BIOL1003"
+        ],
+        [
+          "BIOL1004"
+        ]
+      ],
+      "note": "Requires 24 units of 2000- or 3000-level BIOL courses. Incompatible with BIOL6109."
+    },
+    {
+      "code": "BIOL4001",
+      "title": "Biology IV Honours",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": []
+    }
+  ]
+}

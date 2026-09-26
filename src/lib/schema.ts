@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { int, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { int, primaryKey, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 // The schema is the ground truth for the database. To change it: edit here,
 // run `pnpm db:generate` to turn the diff into a migration under drizzle/,
@@ -9,11 +9,18 @@ import { int, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 // migration trail is what keeps old state and new code compatible.
 //
 // Two families of table, deliberately kept apart: the course catalogue
-// (`courses`, `prerequisiteGroups`) is one fixed dataset shared by every
+// (`subjectAreas`, `courses`, `prerequisiteGroups`) is one fixed dataset shared by every
 // visitor, sourced from real ANU Programs & Courses data (see
 // src/lib/course-data.ts). The student data (`users`, `completedCourses`,
 // `enrolments`) is one row set per logged-in user, so the same catalogue can
 // be checked against a different transcript for every account created.
+
+// A subject area is the four-letter prefix of a course code (COMP, PSYC), which
+// is how ANU codes are built, so courses don't store it again.
+export const subjectAreas = sqliteTable("subject_areas", {
+  code: text().primaryKey(),
+  description: text().notNull(),
+});
 
 // Course catalogue. `requiresPermission` covers gates a code check can't
 // verify on its own (competitive entry, supervisor sign-off, a permission
@@ -34,14 +41,18 @@ export const courses = sqliteTable("courses", {
 // An AND-of-ORs: within one `group`, completing any one `requiredCode`
 // satisfies it; a course is prerequisite-clear only once every group it has
 // is satisfied.
-export const prerequisiteGroups = sqliteTable("prerequisite_groups", {
-  id: int().primaryKey({ autoIncrement: true }),
-  courseCode: text("course_code")
-    .notNull()
-    .references(() => courses.code),
-  group: int().notNull(),
-  requiredCode: text("required_code").notNull(),
-});
+export const prerequisiteGroups = sqliteTable(
+  "prerequisite_groups",
+  {
+    id: int().primaryKey({ autoIncrement: true }),
+    courseCode: text("course_code")
+      .notNull()
+      .references(() => courses.code),
+    group: int().notNull(),
+    requiredCode: text("required_code").notNull(),
+  },
+  (table) => [uniqueIndex("prerequisite_groups_unique").on(table.courseCode, table.group, table.requiredCode)],
+);
 
 // There's no real identity provider here — see src/lib/auth.ts for what
 // "login" means in this prototype. `password` is stored in the clear on
@@ -88,6 +99,7 @@ export const enrolments = sqliteTable(
   (table) => [primaryKey({ columns: [table.username, table.courseCode] })],
 );
 
+export type SubjectArea = typeof subjectAreas.$inferSelect;
 export type Course = typeof courses.$inferSelect;
 export type PrerequisiteGroup = typeof prerequisiteGroups.$inferSelect;
 export type User = typeof users.$inferSelect;

@@ -1,0 +1,233 @@
+{
+  "code": "MATH",
+  "description": "Mathematics",
+  "courses": [
+    {
+      "code": "MATH1003",
+      "title": "Algebra and Calculus Methods",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Incompatible with MATH1013, MATH1113, and MATH1115."
+    },
+    {
+      "code": "MATH1005",
+      "title": "Discrete Mathematical Models",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Incompatible with MATH6005."
+    },
+    {
+      "code": "MATH1013",
+      "title": "Mathematics and Applications 1",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Incompatible with MATH1113 and MATH1115, including concurrent enrolment."
+    },
+    {
+      "code": "MATH1014",
+      "title": "Mathematics and Applications 2",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH1013",
+          "MATH1115",
+          "MATH1113"
+        ]
+      ],
+      "note": "Incompatible with MATH1116."
+    },
+    {
+      "code": "MATH1113",
+      "title": "Mathematical Foundations for Actuarial Studies",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Incompatible with MATH1013 and MATH1115."
+    },
+    {
+      "code": "MATH1115",
+      "title": "Advanced Mathematics and Applications 1",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "If you have previously completed MATH1013 or MATH1113, you may only enrol with permission of the course convener."
+    },
+    {
+      "code": "MATH2222",
+      "title": "Introduction to Mathematical Thinking: Problem-Solving and Proofs",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH1116",
+          "MATH1113",
+          "MATH1005",
+          "MATH1013",
+          "MATH1014"
+        ]
+      ],
+      "note": "Requires MATH1116 (mark of at least 50), MATH1113 (at least 60), MATH1005 (at least 70), or MATH1013/MATH1014 (at least 80); exceptional students may take it alongside MATH1115. Incompatible with MATH2322, MATH3104, MATH2320, MATH3116, and MATH6222."
+    },
+    {
+      "code": "MATH2301",
+      "title": "Games, Graphs and Machines",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH1005",
+          "MATH1013",
+          "MATH1113",
+          "MATH1115"
+        ]
+      ]
+    },
+    {
+      "code": "MATH2305",
+      "title": "Applied Mathematics I",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH1116",
+          "MATH1014"
+        ]
+      ],
+      "note": "Alternatively: MATH1113 with a mark of at least 80, or MATH1013 with a mark over 80, each with concurrent enrolment in MATH1014. Incompatible with MATH6405."
+    },
+    {
+      "code": "MATH2306",
+      "title": "Applied Mathematics II",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH2305"
+        ]
+      ],
+      "note": "Incompatible with MATH6406."
+    },
+    {
+      "code": "MATH2307",
+      "title": "Bioinformatics and Biological Modelling",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH1014",
+          "MATH1116"
+        ]
+      ],
+      "note": "Requires 12 units of 1000-level MATH courses. Incompatible with MATH6100."
+    },
+    {
+      "code": "MATH2320",
+      "title": "Advanced Analysis 1: Metric Spaces and Applications",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH1116"
+        ]
+      ],
+      "note": "Requires a mark of 60 or above in MATH1116. Incompatible with MATH3116."
+    },
+    {
+      "code": "MATH3015",
+      "title": "Stochastic Analysis with Financial Applications",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH3029",
+          "MATH3320"
+        ]
+      ],
+      "note": "Incompatible with MATH6115."
+    },
+    {
+      "code": "MATH3029",
+      "title": "Probability Theory with Applications",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "STAT2001",
+          "MATH2320",
+          "MATH3116",
+          "STAT2005"
+        ]
+      ],
+      "note": "Incompatible with MATH6109."
+    },
+    {
+      "code": "MATH3062",
+      "title": "Fractal Geometry and Chaotic Dynamics",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH1116"
+        ]
+      ],
+      "note": "Requires any 2000- or 3000-level MATH course with a mark of 60 or above, or MATH1116 with a mark of 80 or above. Incompatible with MATH6116."
+    },
+    {
+      "code": "MATH3133",
+      "title": "Environmental Mathematics",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH2305",
+          "MATH2405"
+        ]
+      ],
+      "note": "Incompatible with MATH6102."
+    },
+    {
+      "code": "MATH3228",
+      "title": "Advanced Complex Analysis",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH2320"
+        ]
+      ],
+      "note": "Requires a mark of 60 or above in MATH2320."
+    },
+    {
+      "code": "MATH3301",
+      "title": "Number Theory and Cryptography",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "MATH1014",
+          "MATH1116"
+        ]
+      ],
+      "note": "Requires MATH1014 (mark of at least 80) or MATH1116 (at least 60), each with 72 units of tertiary study including 24 units of MATH courses; alternatively, at least one 2000- or 3000-level MATH course. Incompatible with MATH6114."
+    },
+    {
+      "code": "MATH4005",
+      "title": "Thesis and Presentations in Mathematics",
+      "terms": "Summer Session/First Semester/Winter Session/Second Semester",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "MATH4201",
+      "title": "Topics in Computational Maths Honours",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires enrolment in the MATH-HSPC Honours specialisation. Incompatible with MATH6201 and MATH8201."
+    }
+  ]
+}

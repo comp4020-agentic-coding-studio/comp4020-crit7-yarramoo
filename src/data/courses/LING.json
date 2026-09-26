@@ -1,0 +1,176 @@
+{
+  "code": "LING",
+  "description": "Linguistics",
+  "courses": [
+    {
+      "code": "LING1001",
+      "title": "Language Unlocked: An Introduction to Linguistics",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Incompatible with LING2001, LING6001, and LING8004, unless you have permission of the course convenor."
+    },
+    {
+      "code": "LING1002",
+      "title": "The Social Life of Language",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Incompatible with LING2002, LING6002, and LING8013, unless you have permission of the Course Convener."
+    },
+    {
+      "code": "LING2003",
+      "title": "Grammar of the World's Languages",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "LING1001",
+          "LING2020"
+        ]
+      ],
+      "note": "Alternatively: permission of the Course Convener. Incompatible with LING6003."
+    },
+    {
+      "code": "LING2005",
+      "title": "Language Across Time",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "LING1001"
+        ]
+      ],
+      "note": "Alternatively: permission of the course convener. Incompatible with LING6005."
+    },
+    {
+      "code": "LING2008",
+      "title": "Semantics",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "LING1001"
+        ]
+      ],
+      "note": "Alternatively: permission of the Course Convenor. Incompatible with LING6008."
+    },
+    {
+      "code": "LING2010",
+      "title": "Sounds of the World's Languages: Phonetics and Phonology",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "LING1001"
+        ]
+      ],
+      "note": "Alternatively: permission of the course convenor. Incompatible with LING1004, LING2004, LING1010, and LING6010."
+    },
+    {
+      "code": "LING2013",
+      "title": "Teaching Languages",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 12 units of Linguistics (LING) and/or Languages (LANG) courses, or convenor permission. Incompatible with LING6013."
+    },
+    {
+      "code": "LING2015",
+      "title": "Language, Culture and Translation",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "LING1001",
+          "ANTH1002",
+          "ANTH1003"
+        ]
+      ],
+      "note": "Alternatively: permission of the convenor."
+    },
+    {
+      "code": "LING3012",
+      "title": "Field Methods in Linguistics",
+      "terms": "Winter Session",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "LING2003"
+        ],
+        [
+          "LING2010"
+        ]
+      ],
+      "note": "Requires 24 units of prior LING units in total; if currently enrolled in either course, or with equivalent background, contact the convenor about permission."
+    },
+    {
+      "code": "LING3025",
+      "title": "Special Topics in Linguistics",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of Linguistics (LING) courses and/or convenor permission."
+    },
+    {
+      "code": "LING3031",
+      "title": "Papuan Languages",
+      "terms": "Autumn Session",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "LING2003"
+        ]
+      ],
+      "note": "Alternatively: permission of the Course Convener for sufficient background or willingness to complete preparatory reading."
+    },
+    {
+      "code": "LING3032",
+      "title": "Forensic Linguistics: Forensic Voice and Text Comparison",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "LING2105"
+        ]
+      ],
+      "note": "Alternatively: permission of the course coordinator. Incompatible with LING6032."
+    },
+    {
+      "code": "LING3035",
+      "title": "Semantic Typology",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "LING2008"
+        ]
+      ],
+      "note": "Alternatively: 24 units of Linguistics (LING) courses, or convenor permission."
+    },
+    {
+      "code": "LING3036",
+      "title": "Advanced Sociolinguistics",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of Linguistics (LING) courses, or convener permission. Incompatible with LING6036."
+    },
+    {
+      "code": "LING4013",
+      "title": "Essentials for Thesis Writing in Linguistics",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires enrolment in a Bachelor of Arts (Honours) or Bachelor of Languages (Honours). Incompatible with HUMN4001."
+    },
+    {
+      "code": "LING4100",
+      "title": "Quantitative Research Methods in Linguistics",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires enrolment in HARTS/HART2, HLANG, HMECA, or HASIA, or completion of 144 units towards APHAR/APNAR."
+    }
+  ]
+}

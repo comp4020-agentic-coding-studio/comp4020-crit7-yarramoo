@@ -1,0 +1,190 @@
+{
+  "code": "PSYC",
+  "description": "Psychology",
+  "courses": [
+    {
+      "code": "PSYC1003",
+      "title": "Psychology 1: Understanding Mind, Brain and Behaviour",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires enrolment in an eligible program such as BSPSY, BSC, BARTS, BHLTH, BDESN, PhB, AHUSS, ASCAD, APSYC, or BPNP."
+    },
+    {
+      "code": "PSYC1004",
+      "title": "Psychology 2: Understanding People in Context",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires enrolment in an eligible program such as BSPSY, BSC, BARTS, BHLTH, BDESN, PhB, AHUSS, ASCAD, APSYC, or BPNP."
+    },
+    {
+      "code": "PSYC1005",
+      "title": "The Wellbeing Formula: The Science and Practice of Making a Good Life",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "PSYC2001",
+      "title": "Social Psychology",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PSYC1003"
+        ],
+        [
+          "PSYC1004"
+        ]
+      ]
+    },
+    {
+      "code": "PSYC2002",
+      "title": "Developmental Psychology",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PSYC1003"
+        ],
+        [
+          "PSYC1004"
+        ]
+      ],
+      "note": "Waived for students with documented equivalent study at another institution. Incompatible with PSYC3202."
+    },
+    {
+      "code": "PSYC2007",
+      "title": "Biological Basis of Psychology",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PSYC1003"
+        ],
+        [
+          "PSYC1004"
+        ]
+      ],
+      "note": "Alternatively: BIOL1008 or BIOL1020. Incompatible with PSYC6010."
+    },
+    {
+      "code": "PSYC2008",
+      "title": "Cognition",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PSYC1003"
+        ],
+        [
+          "PSYC1004"
+        ]
+      ]
+    },
+    {
+      "code": "PSYC2009",
+      "title": "Quantitative Methods in Psychology",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PSYC1003"
+        ],
+        [
+          "PSYC1004"
+        ]
+      ],
+      "note": "Alternatively: enrolled in the BPNP with PSYC1003 and PNPI1001, or with permission from the course convener for students with an appropriate methodological background."
+    },
+    {
+      "code": "PSYC2011",
+      "title": "Introduction to Forensic and Criminal Psychology",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 12 units of Psychology (PSYC), Sociology (SOCY), Law (LAWS), or Criminology (CRIM) courses."
+    },
+    {
+      "code": "PSYC3002",
+      "title": "The Social Psychology of Group Processes and Social Change",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PSYC2001"
+        ]
+      ]
+    },
+    {
+      "code": "PSYC3015",
+      "title": "Visual and Cognitive Neuroscience",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PSYC2008"
+        ]
+      ]
+    },
+    {
+      "code": "PSYC3016",
+      "title": "Neuropsychology and Cognitive Neuroscience",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PSYC2007",
+          "PSYC2008",
+          "MEDN2001",
+          "NEUR3101"
+        ]
+      ]
+    },
+    {
+      "code": "PSYC3018",
+      "title": "Advanced Research Methods",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PSYC2009"
+        ]
+      ]
+    },
+    {
+      "code": "PSYC3020",
+      "title": "Health Psychology",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PSYC2009"
+        ]
+      ]
+    },
+    {
+      "code": "PSYC3023",
+      "title": "Special Topics in Psychology",
+      "terms": "Second Semester",
+      "requiresPermission": true,
+      "groups": [],
+      "note": "Requires a minimum average mark of 65 in Psychology courses."
+    },
+    {
+      "code": "PSYC4011",
+      "title": "Psychology Honours",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "PSYC4200",
+      "title": "Psychology Honours Thesis",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": []
+    }
+  ]
+}

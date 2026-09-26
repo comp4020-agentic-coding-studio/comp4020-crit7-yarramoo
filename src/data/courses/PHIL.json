@@ -1,0 +1,157 @@
+{
+  "code": "PHIL",
+  "description": "Philosophy",
+  "courses": [
+    {
+      "code": "PHIL1004",
+      "title": "Fundamental Ideas in Philosophy: An Introduction",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "PHIL1005",
+      "title": "Logic and Critical Thinking",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": []
+    },
+    {
+      "code": "PHIL2012",
+      "title": "Buddhist Philosophy",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PHIL1004",
+          "PHIL1005"
+        ]
+      ],
+      "note": "Alternatively: with permission of the course convener."
+    },
+    {
+      "code": "PHIL2014",
+      "title": "Topics in Analytic Philosophy",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PHIL1004",
+          "PHIL1005"
+        ]
+      ],
+      "note": "Alternatively: with permission of the course convener."
+    },
+    {
+      "code": "PHIL2020",
+      "title": "Theories of Social Justice",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PHIL1004",
+          "PHIL1005"
+        ]
+      ],
+      "note": "Alternatively: with permission of the course convener."
+    },
+    {
+      "code": "PHIL2057",
+      "title": "Philosophy of Science",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of courses towards an ANU degree."
+    },
+    {
+      "code": "PHIL2061",
+      "title": "Philosophy of Mind",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PHIL1004",
+          "PHIL1005"
+        ]
+      ],
+      "note": "Alternatively: with permission of the course convener."
+    },
+    {
+      "code": "PHIL2074",
+      "title": "Modern Theories of Knowledge",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [
+        [
+          "PHIL1004",
+          "PHIL1005"
+        ]
+      ],
+      "note": "Alternatively: with permission of the course convener."
+    },
+    {
+      "code": "PHIL3073",
+      "title": "Topics in Advanced Ethics, Social and Political Philosophy",
+      "terms": "First Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of Philosophy (PHIL) courses, or convenor permission."
+    },
+    {
+      "code": "PHIL3074",
+      "title": "Advanced Philosophical Topics",
+      "terms": "Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of Philosophy (PHIL) courses, or convenor permission."
+    },
+    {
+      "code": "PHIL3075",
+      "title": "The Philosophy of Gender: Knowledge, Power, Bodies",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of Philosophy (PHIL) or Gender (GEND) courses, or convenor permission."
+    },
+    {
+      "code": "PHIL3076",
+      "title": "Philosophy of the Life Sciences",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of Philosophy (PHIL) courses, or convenor permission."
+    },
+    {
+      "code": "PHIL3077",
+      "title": "The Metaphysics of David Lewis",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of Philosophy (PHIL) courses, or convenor permission."
+    },
+    {
+      "code": "PHIL3078",
+      "title": "The Philosophy of Emotions",
+      "terms": "",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires 24 units of Philosophy (PHIL) courses, or convenor permission."
+    },
+    {
+      "code": "PHIL4009",
+      "title": "Research Design in Philosophy",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires enrolment in HARTS/HART2, HPPE, or HASIA, or at least 144 units towards APHAR/APNAR."
+    },
+    {
+      "code": "PHIL4010",
+      "title": "Honours Seminar in Philosophy",
+      "terms": "First Semester/Second Semester",
+      "requiresPermission": false,
+      "groups": [],
+      "note": "Requires enrolment in HARTS/HART2, HPPE, or HASIA, or at least 144 units towards APHAR/APNAR."
+    }
+  ]
+}
